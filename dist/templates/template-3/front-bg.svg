@@ -1,0 +1,14 @@
+<svg width="638" height="1000" viewBox="0 0 638 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="638" height="1000" fill="#FFFFFF"/>
+  <!-- Top Diagonal Red Header -->
+  <polygon points="0,0 638,0 638,150 0,180" fill="#DC2626"/>
+  <polygon points="0,180 638,150 638,160 0,190" fill="#FACC15"/>
+  
+  <!-- Vertical Press Bar -->
+  <rect x="0" y="240" width="90" height="420" fill="#DC2626" opacity="0.08"/>
+  <rect x="0" y="240" width="10" height="420" fill="#DC2626"/>
+  
+  <!-- Giant Watermark Text -->
+  <text x="319" y="860" fill="#F1F5F9" font-family="'Oswald', sans-serif" font-weight="700" font-size="120" text-anchor="middle" letter-spacing="4">MEDIA</text>
+  <rect x="0" y="970" width="638" height="30" fill="#18181B"/>
+</svg>

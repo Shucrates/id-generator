@@ -1,0 +1,28 @@
+<svg width="638" height="1000" viewBox="0 0 638 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Card Background -->
+  <rect width="638" height="1000" fill="#F8FAFC"/>
+  
+  <!-- Top Blue Accent Banner -->
+  <path d="M0 0H638V180L0 130V0Z" fill="url(#grad1)"/>
+  
+  <!-- Subtle Gradient Accent Band -->
+  <path d="M0 130L638 180V192L0 142V130Z" fill="#38BDF8"/>
+  
+  <!-- Left Role Banner Stripe -->
+  <rect x="0" y="240" width="90" height="420" fill="#0284C7" opacity="0.1"/>
+  <rect x="0" y="240" width="8" height="420" fill="#0284C7"/>
+  
+  <!-- Watermark Graphic -->
+  <circle cx="520" cy="850" r="180" stroke="#E2E8F0" stroke-width="20" opacity="0.4"/>
+  <circle cx="520" cy="850" r="120" stroke="#38BDF8" stroke-width="10" opacity="0.2"/>
+
+  <!-- Footer Stripe -->
+  <rect x="0" y="970" width="638" height="30" fill="#0F172A"/>
+
+  <defs>
+    <linearGradient id="grad1" x1="0" y1="0" x2="638" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0284C7"/>
+      <stop offset="1" stop-color="#0369A1"/>
+    </linearGradient>
+  </defs>
+</svg>

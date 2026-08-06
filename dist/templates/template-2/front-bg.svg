@@ -1,0 +1,23 @@
+<svg width="638" height="1000" viewBox="0 0 638 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="638" height="1000" fill="#090D16"/>
+  <!-- Sci-Fi Grid -->
+  <path d="M0 100 H638 M0 200 H638 M0 300 H638 M0 400 H638 M0 500 H638 M0 600 H638 M0 700 H638 M0 800 H638 M0 900 H638" stroke="#1E293B" stroke-width="1" stroke-dasharray="4 4"/>
+  <path d="M100 0 V1000 M200 0 V1000 M300 0 V1000 M400 0 V1000 M500 0 V1000 M600 0 V1000" stroke="#1E293B" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Top Amber Glowing Tech Line -->
+  <path d="M0 160 H200 L230 190 H638" stroke="#F59E0B" stroke-width="3" fill="none"/>
+  <rect x="0" y="0" width="638" height="160" fill="#0B0F19"/>
+
+  <!-- Left Clearance Bar -->
+  <rect x="0" y="240" width="90" height="420" fill="#F59E0B" fill-opacity="0.1"/>
+  <rect x="85" y="240" width="5" height="420" fill="#F59E0B"/>
+
+  <!-- Tech Corner Markers -->
+  <path d="M30 30 H60 V60" stroke="#06B6D4" stroke-width="2" fill="none"/>
+  <path d="M608 30 H578 V60" stroke="#06B6D4" stroke-width="2" fill="none"/>
+  <path d="M30 970 H60 V940" stroke="#06B6D4" stroke-width="2" fill="none"/>
+  <path d="M608 970 H578 V940" stroke="#06B6D4" stroke-width="2" fill="none"/>
+
+  <!-- Hologram Watermark Circle -->
+  <circle cx="500" cy="800" r="140" stroke="#06B6D4" stroke-width="2" stroke-dasharray="10 6" opacity="0.3"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg width="638" height="1000" viewBox="0 0 638 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Card Back Background -->
+  <rect width="638" height="1000" fill="#F8FAFC"/>
+
+  <!-- Top Dark Security Stripe Header -->
+  <rect width="638" height="200" fill="#0F172A"/>
+
+  <!-- Diagonal Stripe Security Pattern Accent -->
+  <path d="M-50 700 L700 400 L700 460 L-50 760 Z" fill="#0284C7" opacity="0.15"/>
+  <path d="M-50 740 L700 440 L700 500 L-50 800 Z" fill="#38BDF8" opacity="0.2"/>
+
+  <!-- Bottom Accent Line -->
+  <rect y="960" width="638" height="40" fill="#0284C7"/>
+</svg>
