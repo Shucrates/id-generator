@@ -207,7 +207,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                 fontFamily: "'Arial Narrow', 'Arial', sans-serif",
               }}
             >
-              TASM : Oscorp Staff ID
+              tasm: oscorp staff id
             </h3>
           </div>
 

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { renderCardCanvas } from '../utils/canvasRenderer';
-import { Pencil, Camera, Dices, Check, X, QrCode } from 'lucide-react';
+import { Pencil, Check, X, Link as LinkIcon } from 'lucide-react';
 
 export default function DualCardView({
   template,
@@ -8,11 +8,16 @@ export default function DualCardView({
   setUserData,
   croppedPhotoUrl,
   onOpenCropModal,
-  isCustomMode
+  isCustomMode,
+  backVersion = 'oscorp-symbol',
+  setBackVersion,
+  showCuttingGuides = false,
+  setShowCuttingGuides,
+  isDownloaded = false
 }) {
   const frontCanvasRef = useRef(null);
   const backCanvasRef = useRef(null);
-  const [editingField, setEditingField] = useState(null); // 'name' | 'department' | 'idNumber' | 'roleLabel' | 'companyName' | 'qrUrl'
+  const [editingField, setEditingField] = useState(null); // 'name' | 'qrUrl'
   const [tempValue, setTempValue] = useState('');
 
   // Live Canvas Rendering for Front and Back side-by-side
@@ -30,7 +35,9 @@ export default function DualCardView({
             side: 'front',
             scale: template.exportScale || 2,
             isCustomMode,
-            isEditingName: editingField === 'name'
+            isEditingName: editingField === 'name',
+            backVersion,
+            showCuttingGuides
           });
         }
 
@@ -42,7 +49,9 @@ export default function DualCardView({
             croppedPhotoUrl,
             side: 'back',
             scale: template.exportScale || 2,
-            isCustomMode
+            isCustomMode,
+            backVersion,
+            showCuttingGuides
           });
         }
       } catch (err) {
@@ -55,20 +64,28 @@ export default function DualCardView({
       isCancelled = true;
       clearTimeout(timer);
     };
-  }, [template, userData, croppedPhotoUrl, isCustomMode, editingField]);
+  }, [template, userData, croppedPhotoUrl, isCustomMode, editingField, backVersion, showCuttingGuides]);
 
   const handleFieldClick = (fieldKey) => {
-    if (!isCustomMode) return;
-
     if (fieldKey === 'photo') {
+      if (!isCustomMode) return;
       const fileInput = document.getElementById('wireframe-file-input');
       if (fileInput) fileInput.click();
       return;
     }
 
-    setEditingField(fieldKey);
-    const currentVal = userData[fieldKey] || '';
-    setTempValue(currentVal);
+    if (fieldKey === 'name') {
+      if (!isCustomMode) return;
+      setEditingField('name');
+      setTempValue(userData.name || '');
+      return;
+    }
+
+    if (fieldKey === 'qrUrl') {
+      if (backVersion !== 'custom-qr') return;
+      setEditingField('qrUrl');
+      setTempValue(userData.qrUrl || template.defaultValues?.qrUrl || '');
+    }
   };
 
   const handleSaveField = () => {
@@ -79,15 +96,6 @@ export default function DualCardView({
       }));
       setEditingField(null);
     }
-  };
-
-  const handleRandomizeId = () => {
-    const randomVal = 'A' + String(Math.floor(10000 + Math.random() * 90000));
-    setTempValue(randomVal);
-    setUserData((prev) => ({
-      ...prev,
-      idNumber: randomVal
-    }));
   };
 
   const handleFileChange = (e) => {
@@ -110,7 +118,7 @@ export default function DualCardView({
   });
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto">
+    <div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto font-sans">
       {/* Hidden File Input */}
       <input
         id="wireframe-file-input"
@@ -121,18 +129,18 @@ export default function DualCardView({
       />
 
       {/* Side-by-Side Cards Grid */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 w-full py-4">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 w-full py-1">
         {/* FRONT CARD CONTAINER */}
-        <div className="relative w-[280px] sm:w-[320px] md:w-[350px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white">
+        <div className="relative w-[240px] sm:w-[270px] md:w-[300px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white shrink-0">
           <canvas
             ref={frontCanvasRef}
             className="w-full h-full object-contain block"
           />
 
-          {/* Hotspots for Front Card in Customizer Mode (ONLY Image and Name) */}
+          {/* Hotspots for Front Card in Customizer Mode */}
           {isCustomMode && (
             <div className="absolute inset-0 z-10 pointer-events-auto">
-              {/* Photo Box: w 752, h 1370 at x 401, y 476 */}
+              {/* Photo Box */}
               <div
                 style={getPercentStyle(401, 910, 752, 940)}
                 onClick={() => handleFieldClick('photo')}
@@ -140,7 +148,7 @@ export default function DualCardView({
                 title="Upload Image"
               />
 
-              {/* Name: x 200, y 1965, w 1115, h 110 - Direct Inline Editing */}
+              {/* Name: Inline Input vs Hotspot */}
               {editingField === 'name' ? (
                 <div
                   style={getPercentStyle(200, 1955, 1115, 110)}
@@ -160,7 +168,7 @@ export default function DualCardView({
                     style={{
                       fontFamily: "'Baskerville', 'Baskerville Old Face', 'Georgia', serif",
                       fontWeight: 600,
-                      fontSize: 'clamp(14px, 4.3vw, 24px)'
+                      fontSize: 'clamp(12px, 3.8vw, 22px)'
                     }}
                     className="w-full text-center bg-transparent text-slate-900 focus:outline-none border-none p-0 m-0 leading-tight placeholder:opacity-35"
                   />
@@ -178,67 +186,173 @@ export default function DualCardView({
         </div>
 
         {/* BACK CARD CONTAINER */}
-        <div className="relative w-[280px] sm:w-[320px] md:w-[350px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white">
+        <div className="relative w-[240px] sm:w-[270px] md:w-[300px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white shrink-0">
           <canvas
             ref={backCanvasRef}
             className="w-full h-full object-contain block"
           />
 
-          {/* Hotspot for QR Code on Back Card in Customizer Mode */}
-          {isCustomMode && (
+          {/* Hotspot for QR Code on Back Card when QR Code Back Version is active */}
+          {backVersion === 'custom-qr' && (
             <div className="absolute inset-0 z-10 pointer-events-auto">
-              {/* QR Box: x 780, y 1520, w 408, h 408 */}
               <div
                 style={getPercentStyle(800, 1460, 420, 420)}
                 onClick={() => handleFieldClick('qrUrl')}
                 className="absolute on-card-field-hover flex items-center justify-center group"
-                title="Add QR Code URL"
+                title="Click to edit QR Code URL"
               />
             </div>
           )}
         </div>
       </div>
 
-      {/* Inline Field Popover ONLY for QR Code URL */}
-      {editingField && editingField === 'qrUrl' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white border border-slate-300 rounded-xl p-6 w-full max-w-md shadow-2xl flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 text-base capitalize flex items-center gap-2">
-                <Pencil className="w-4 h-4 text-slate-700" /> Edit QR Code URL
-              </h3>
-              <button
-                onClick={() => setEditingField(null)}
-                className="p-1 text-slate-400 hover:text-slate-900 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* ── SIMPLE CLEAN TOGGLES (No outer container box) ── */}
+      <div className="w-full max-w-[600px] mx-auto my-3 px-4 flex flex-col items-center justify-center gap-2.5 select-none shrink-0 font-sans">
+        <div className="flex items-center justify-center gap-8 sm:gap-14">
+          
+          {/* 1. CUTTING LINES TOGGLE */}
+          <div className="flex items-center gap-2.5">
+            <label
+              className="text-[17px] font-bold text-[#1d19ea] flex items-center gap-1.5 leading-none cursor-pointer"
+              onClick={() => setShowCuttingGuides && setShowCuttingGuides(!showCuttingGuides)}
+              style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
+            >
+              <span>✂️</span> cutting lines
+            </label>
 
-            <div className="flex gap-2">
-              <input
-                type="text"
-                autoFocus
-                value={tempValue}
-                onChange={(e) => setTempValue(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSaveField()}
-                placeholder="Enter URL or text for QR code..."
-                className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-black font-sans"
+            {/* 3D Retro Bevel Pill Toggle Switch */}
+            <div
+              onClick={() => setShowCuttingGuides && setShowCuttingGuides(!showCuttingGuides)}
+              className="relative w-14 h-7 rounded-full cursor-pointer transition-all flex items-center px-0.5 shrink-0"
+              style={{
+                background: showCuttingGuides
+                  ? 'linear-gradient(180deg, #b8c1ef 0%, #909ce0 100%)'
+                  : 'linear-gradient(180deg, #dfdfdf 0%, #c0c0c0 100%)',
+                boxShadow: 'inset 1px 1px 2px #505050, inset -1px -1px 2px #ffffff, 0 0 0 1px #000000',
+              }}
+              title="Toggle cutting notch lines"
+            >
+              <div
+                className="w-6 h-6 rounded-full transition-transform duration-200"
+                style={{
+                  transform: showCuttingGuides ? 'translateX(26px)' : 'translateX(0px)',
+                  background: 'linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%)',
+                  boxShadow: 'inset 1px 1px 0px #ffffff, inset -1px -1px 1px #505050, 0 0 0 1px #000000',
+                }}
               />
             </div>
+          </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+          {/* 2. SIMPLE CUSTOM QR TOGGLE */}
+          <div className="flex items-center gap-2.5">
+            <label
+              className="text-[17px] font-bold text-[#1d19ea] flex items-center gap-1.5 leading-none cursor-pointer"
+              onClick={() => {
+                const nextVersion = backVersion === 'custom-qr' ? 'oscorp-symbol' : 'custom-qr';
+                if (setBackVersion) setBackVersion(nextVersion);
+              }}
+              style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
+            >
+              <span>⚙️</span> custom qr
+            </label>
+
+            {/* 3D Retro Bevel Pill Toggle Switch */}
+            <div
+              onClick={() => {
+                const nextVersion = backVersion === 'custom-qr' ? 'oscorp-symbol' : 'custom-qr';
+                if (setBackVersion) setBackVersion(nextVersion);
+              }}
+              className="relative w-14 h-7 rounded-full cursor-pointer transition-all flex items-center px-0.5 shrink-0"
+              style={{
+                background: backVersion === 'custom-qr'
+                  ? 'linear-gradient(180deg, #b8c1ef 0%, #909ce0 100%)'
+                  : 'linear-gradient(180deg, #dfdfdf 0%, #c0c0c0 100%)',
+                boxShadow: 'inset 1px 1px 2px #505050, inset -1px -1px 2px #ffffff, 0 0 0 1px #000000',
+              }}
+              title="Toggle custom QR code"
+            >
+              <div
+                className="w-6 h-6 rounded-full transition-transform duration-200"
+                style={{
+                  transform: backVersion === 'custom-qr' ? 'translateX(26px)' : 'translateX(0px)',
+                  background: 'linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%)',
+                  boxShadow: 'inset 1px 1px 0px #ffffff, inset -1px -1px 1px #505050, 0 0 0 1px #000000',
+                }}
+              />
+            </div>
+          </div>
+
+        </div>
+
+        {/* Sunken Windows 98 Style Text Input for QR Link (Appears when custom qr is turned ON) */}
+        {backVersion === 'custom-qr' && (
+          <div className="w-full max-w-sm mt-1 transition-all animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="flex items-center gap-2">
+              <LinkIcon className="w-4 h-4 text-[#1d19ea] shrink-0" />
+              <input
+                type="text"
+                value={userData.qrUrl || ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setUserData((prev) => ({ ...prev, qrUrl: val }));
+                }}
+                placeholder="paste your link here"
+                className="w-full px-3 py-1.5 text-[13px] text-slate-900 focus:outline-none placeholder:text-slate-400"
+                style={{
+                  fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                  backgroundColor: '#ffffff',
+                  boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.4), inset -1px -1px 0px #ffffff, 0 0 0 1px #707070',
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+
+      </div>
+
+      {/* Inline Field Popover for QR Code URL (matching ImageCropModal UI) */}
+      {editingField && editingField === 'qrUrl' && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 font-sans">
+          <div className="flex flex-col items-center gap-3 w-full max-w-sm">
+            {/* Main White Card Container */}
+            <div className="bg-white border border-black/60 rounded-lg w-full overflow-hidden shadow-2xl flex flex-col gap-4 p-5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-black text-lg flex items-center gap-2 tracking-tight">
+                  <Pencil className="w-4 h-4 text-black" /> Edit QR Code Link
+                </h3>
+              </div>
+
+              <div className="w-full">
+                <input
+                  type="text"
+                  autoFocus
+                  value={tempValue}
+                  onChange={(e) => setTempValue(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSaveField()}
+                  placeholder="Enter custom URL or text for QR code..."
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded text-sm text-slate-900 focus:outline-none focus:border-black font-sans"
+                />
+              </div>
+            </div>
+
+            {/* Bottom Button Row: Cross (Left) & Tick (Right) with full-height partition line */}
+            <div className="grid grid-cols-2 w-full bg-white border border-black/60 rounded-lg overflow-hidden shadow-lg h-11">
               <button
+                type="button"
                 onClick={() => setEditingField(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg"
+                className="flex items-center justify-center text-black hover:bg-slate-100 transition border-r border-black/60 h-full cursor-pointer"
+                title="Cancel"
               >
-                Cancel
+                <X className="w-5 h-5 stroke-[2]" />
               </button>
               <button
+                type="button"
                 onClick={handleSaveField}
-                className="flex items-center gap-1.5 px-5 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-lg shadow"
+                className="flex items-center justify-center text-black hover:bg-slate-100 transition h-full cursor-pointer"
+                title="Apply changes"
               >
-                <Check className="w-4 h-4" /> Apply Changes
+                <Check className="w-5 h-5 stroke-[2]" />
               </button>
             </div>
           </div>

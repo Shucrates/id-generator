@@ -9,15 +9,18 @@ export default function ExportActions({
   croppedPhotoUrl,
   isCustomMode,
   setIsCustomMode,
-  onCustomModeTrigger
+  onCustomModeTrigger,
+  backVersion = 'oscorp-symbol',
+  showCuttingGuides = false,
+  onDownloadComplete
 }) {
   const [isExporting, setIsExporting] = useState(false);
 
   const fireConfetti = () => {
     confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.85 }
+      particleCount: 60,
+      spread: 70,
+      origin: { y: 0.8 }
     });
   };
 
@@ -29,8 +32,10 @@ export default function ExportActions({
       userData,
       croppedPhotoUrl,
       side,
-      scale: template.exportScale || 1,
-      isCustomMode
+      scale: 2, // Ultra HD High Resolution Export (3030 x 4800 pixels)
+      isCustomMode,
+      backVersion,
+      showCuttingGuides
     });
 
     return new Promise((resolve) => {
@@ -64,6 +69,13 @@ export default function ExportActions({
       URL.revokeObjectURL(url);
 
       fireConfetti();
+
+      // Navigate to Thank You page after download completes
+      setTimeout(() => {
+        if (onDownloadComplete) {
+          onDownloadComplete();
+        }
+      }, 400);
     } catch (err) {
       console.error("ZIP Export error:", err);
     } finally {
@@ -71,55 +83,57 @@ export default function ExportActions({
     }
   };
 
-  const handleFollowCreator = () => {
-    window.open('https://github.com/Shucrates', '_blank');
+  const handleGoBackToDefault = () => {
+    setIsCustomMode(false);
   };
 
   return (
-    <div className="flex items-center justify-center gap-6 sm:gap-12 w-full max-w-xl my-6">
-      {!isCustomMode ? (
-        // SCREEN 1 BUTTONS
-        <>
-          <button
-            onClick={handleDownloadZip}
-            disabled={isExporting}
-            className="btn-wireframe px-6 sm:px-10 py-3 text-sm sm:text-base tracking-tight shadow-sm active:scale-95 disabled:opacity-50"
-          >
-            {isExporting ? 'zipping...' : 'download default'}
-          </button>
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="flex items-center justify-center gap-4 sm:gap-8 w-full max-w-xl my-2">
+        {!isCustomMode ? (
+          // DEFAULT MODE BUTTONS
+          <>
+            <button
+              onClick={handleDownloadZip}
+              disabled={isExporting}
+              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer disabled:opacity-50 min-w-[190px] sm:min-w-[240px]"
+            >
+              {isExporting ? 'zipping...' : 'download default'}
+            </button>
 
-          <button
-            onClick={() => {
-              if (onCustomModeTrigger) {
-                onCustomModeTrigger();
-              } else {
-                setIsCustomMode(true);
-              }
-            }}
-            className="btn-wireframe px-6 sm:px-10 py-3 text-sm sm:text-base tracking-tight shadow-sm active:scale-95"
-          >
-            create your own
-          </button>
-        </>
-      ) : (
-        // SCREEN 2 BUTTONS
-        <>
-          <button
-            onClick={handleDownloadZip}
-            disabled={isExporting}
-            className="btn-wireframe px-6 sm:px-10 py-3 text-sm sm:text-base tracking-tight shadow-sm active:scale-95 disabled:opacity-50"
-          >
-            {isExporting ? 'zipping...' : 'download custom id'}
-          </button>
+            <button
+              onClick={() => {
+                if (onCustomModeTrigger) {
+                  onCustomModeTrigger();
+                } else {
+                  setIsCustomMode(true);
+                }
+              }}
+              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer min-w-[190px] sm:min-w-[240px]"
+            >
+              create your own
+            </button>
+          </>
+        ) : (
+          // CUSTOM MODE BUTTONS
+          <>
+            <button
+              onClick={handleGoBackToDefault}
+              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer min-w-[190px] sm:min-w-[240px]"
+            >
+              go back to default
+            </button>
 
-          <button
-            onClick={handleFollowCreator}
-            className="btn-wireframe px-6 sm:px-10 py-3 text-sm sm:text-base tracking-tight shadow-sm active:scale-95"
-          >
-            follow the creator
-          </button>
-        </>
-      )}
+            <button
+              onClick={handleDownloadZip}
+              disabled={isExporting}
+              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer disabled:opacity-50 min-w-[190px] sm:min-w-[240px]"
+            >
+              {isExporting ? 'zipping...' : 'download custom id'}
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

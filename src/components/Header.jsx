@@ -2,11 +2,12 @@ import React from 'react';
 
 export default function Header({ isCustomMode }) {
   return (
-    <header className="w-full py-8 px-4 flex items-center justify-center text-center">
-      <h1 className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">
-        {isCustomMode
-          ? "Richard Parker ID from TASM"
-          : "CUSTOM ID CARD GENERATOR V1 (more layouts soon!)"}
+    <header className="w-full py-4 px-4 flex items-center justify-center text-center">
+      <h1
+        className="text-[clamp(24px,3.2vw,36px)] font-normal text-[#1d19ea] tracking-tight leading-none"
+        style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
+      >
+        tasm: oscorp staff id
       </h1>
     </header>
   );

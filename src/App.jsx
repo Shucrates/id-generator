@@ -5,6 +5,7 @@ import ImageCropModal from './components/ImageCropModal';
 import ExportActions from './components/ExportActions';
 import LandingPage from './components/LandingPage';
 import TemplatePicker from './components/TemplatePicker';
+import ThankYouPage from './components/ThankYouPage';
 import { TEMPLATES } from './config/templates';
 import { ArrowLeft } from 'lucide-react';
 
@@ -13,6 +14,7 @@ function screenFromHash() {
   const hash = window.location.hash.replace('#', '');
   if (hash === 'templates') return 'templates';
   if (hash === 'editor') return 'editor';
+  if (hash === 'thankyou') return 'thankyou';
   return 'landing';
 }
 
@@ -25,6 +27,10 @@ export default function App() {
   const [userData, setUserData] = useState(activeTemplate.defaultValues);
   const [croppedPhotoUrl, setCroppedPhotoUrl] = useState(null);
   const [isCustomMode, setIsCustomMode] = useState(false);
+
+  // New Editor Toggles: Back Panel Version & Cutting Guides
+  const [backVersion, setBackVersion] = useState('oscorp-symbol'); // 'oscorp-symbol' | 'custom-qr'
+  const [showCuttingGuides, setShowCuttingGuides] = useState(false);
 
   // Photo crop modal state
   const [rawPhotoSrc, setRawPhotoSrc] = useState(null);
@@ -63,12 +69,8 @@ export default function App() {
     setCroppedPhotoUrl(croppedDataUrl);
   };
 
-  const handleBackToDefault = () => {
-    if (isCustomMode) {
-      setIsCustomMode(false);
-    } else {
-      navigateTo('templates');
-    }
+  const handleBackToTemplates = () => {
+    navigateTo('templates');
   };
 
   const handleCreateYourOwn = () => {
@@ -97,23 +99,34 @@ export default function App() {
     );
   }
 
-  // Screen 3: Card Editor Page (Current Editor View)
+  // Screen 4: Thank You Page (Shown after download)
+  if (currentScreen === 'thankyou') {
+    return (
+      <ThankYouPage
+        onBackToTemplates={() => navigateTo('templates')}
+        onMakeAnother={() => navigateTo('editor')}
+      />
+    );
+  }
+
+  // Screen 3: Card Editor Page (Fits completely in 100vh window)
   return (
-    <div className="min-h-screen bg-wireframe text-slate-900 flex flex-col items-center justify-between font-sans selection:bg-slate-900 selection:text-white">
+    <div className="h-screen max-h-screen overflow-hidden bg-wireframe text-slate-900 flex flex-col justify-between items-center py-2 px-4 font-sans selection:bg-slate-900 selection:text-white">
       {/* Top Header Title */}
-      <div className="w-full relative max-w-6xl mx-auto flex items-center justify-center">
+      <div className="w-full relative max-w-6xl mx-auto flex items-center justify-center pt-2">
         <button
-          onClick={handleBackToDefault}
-          className="absolute left-6 top-8 flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-black transition cursor-pointer"
-          title={isCustomMode ? "Back to Default View" : "Back to Templates"}
+          onClick={handleBackToTemplates}
+          className="absolute left-6 top-6 inline-flex items-center gap-2.5 text-[clamp(20px,2vw,26px)] font-normal text-black hover:opacity-75 transition cursor-pointer select-none border-none bg-transparent p-0"
+          style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
+          title="Back to Templates"
         >
-          <ArrowLeft className="w-4 h-4" /> {isCustomMode ? "Default" : "Templates"}
+          <span style={{ fontSize: '1.2em', lineHeight: 1 }}>←</span> templates
         </button>
         <Header isCustomMode={isCustomMode} />
       </div>
 
-      {/* Main Dual-Card Display (Front & Back Side-by-Side) */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
+      {/* Main Dual-Card Display & Controls */}
+      <main className="flex-1 w-full max-w-6xl mx-auto flex flex-col items-center justify-center overflow-hidden py-1">
         <DualCardView
           template={activeTemplate}
           userData={userData}
@@ -121,6 +134,10 @@ export default function App() {
           croppedPhotoUrl={croppedPhotoUrl}
           onOpenCropModal={handleOpenCropModal}
           isCustomMode={isCustomMode}
+          backVersion={backVersion}
+          setBackVersion={setBackVersion}
+          showCuttingGuides={showCuttingGuides}
+          setShowCuttingGuides={setShowCuttingGuides}
         />
 
         {/* Wireframe Bottom Action Buttons */}
@@ -131,6 +148,9 @@ export default function App() {
           isCustomMode={isCustomMode}
           setIsCustomMode={setIsCustomMode}
           onCustomModeTrigger={handleCreateYourOwn}
+          backVersion={backVersion}
+          showCuttingGuides={showCuttingGuides}
+          onDownloadComplete={() => navigateTo('thankyou')}
         />
       </main>
 

@@ -97,7 +97,7 @@ export default function ImageCropModal({
 
       <div className="flex flex-col items-center gap-3 w-full max-w-sm">
         {/* Main White Card Container */}
-        <div className="bg-white border-2 border-black rounded-lg w-full overflow-hidden shadow-2xl flex flex-col items-center p-4">
+        <div className="bg-white border border-black/60 rounded-lg w-full overflow-hidden shadow-2xl flex flex-col items-center p-4">
           {!imageSrc ? (
             /* Upload / Drop Box State matching screenshot 2 */
             <div
@@ -170,13 +170,13 @@ export default function ImageCropModal({
         </div>
 
         {/* Bottom Minimal Close Button matching screenshot */}
-        <div className="w-full bg-white border-2 border-black rounded-lg py-2.5 flex items-center justify-center shadow-lg">
+        <div className="w-full bg-white border border-black/60 rounded-lg py-2 flex items-center justify-center shadow-lg">
           <button
             onClick={onClose}
-            className="text-black hover:opacity-70 transition p-1"
+            className="text-black hover:opacity-70 transition p-1 cursor-pointer"
             title="Close modal"
           >
-            <X className="w-6 h-6 stroke-[2.5]" />
+            <X className="w-5 h-5 stroke-[2]" />
           </button>
         </div>
       </div>
