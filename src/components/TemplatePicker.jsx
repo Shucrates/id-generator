@@ -1,92 +1,253 @@
-import React from 'react';
-import { TEMPLATES } from '../config/templates';
-import { X, Check, Layers, Sparkles } from 'lucide-react';
+import React, { useState, useRef } from 'react';
 
-export default function TemplatePicker({ isOpen, onClose, currentTemplateId, onSelectTemplate }) {
-  if (!isOpen) return null;
+function CurvedArrow() {
+  return (
+    <svg width="160" height="50" viewBox="0 0 160 50" fill="none" className="select-none pointer-events-none">
+      <path
+        d="M 150 42 C 100 10, 50 12, 12 24"
+        stroke="#000000"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M 24 16 L 12 24 L 23 32"
+        stroke="#000000"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export default function TemplatePicker({ onSelectTemplate, onBack }) {
+  const [isCatAnimating, setIsCatAnimating] = useState(false);
+  const audioRef = useRef(null);
+
+  const handleCatClick = () => {
+    // Play Meow Sound
+    try {
+      if (!audioRef.current) {
+        audioRef.current = new Audio('/meow.ogg');
+      }
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch((err) => console.log('Audio play error:', err));
+    } catch (e) {
+      console.log('Audio play error:', e);
+    }
+
+    // Trigger Cat Animation
+    setIsCatAnimating(true);
+    setTimeout(() => setIsCatAnimating(false), 450);
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/90">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-slate-100">Select Template Design</h2>
-              <p className="text-xs text-slate-400">Pick a badge style to customize. Form data is preserved!</p>
-            </div>
-          </div>
+    <div
+      style={{
+        position: 'relative',
+        width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: '#fafafa',
+        fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+        overflowX: 'hidden',
+      }}
+    >
+      {/* Keyframe animation styles */}
+      <style>{`
+        @keyframes catMeow {
+          0% { transform: scale(1) rotate(0deg); }
+          25% { transform: scale(1.12, 0.92) rotate(-4deg); }
+          50% { transform: scale(0.94, 1.08) rotate(4deg); }
+          75% { transform: scale(1.04, 0.97) rotate(-2deg); }
+          100% { transform: scale(1) rotate(0deg); }
+        }
+        .cat-animate {
+          animation: catMeow 0.45s ease-in-out;
+        }
+      `}</style>
+
+      <div
+        style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '40px 60px',
+          boxSizing: 'border-box',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* ── Top Row: Back Button ── */}
+        <div style={{ marginBottom: '20px' }}>
           <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition"
+            onClick={onBack}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px',
+              fontSize: 'clamp(20px, 2.2vw, 28px)',
+              fontWeight: 400,
+              color: '#000',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              padding: 0,
+              userSelect: 'none',
+            }}
           >
-            <X className="w-5 h-5" />
+            <span style={{ fontSize: '1.3em', lineHeight: 1 }}>←</span> back
           </button>
         </div>
 
-        {/* Template Grid */}
-        <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TEMPLATES.map((tmpl) => {
-            const isSelected = tmpl.id === currentTemplateId;
-            return (
+        {/* ── Header Title + Pencil Icon ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '60px' }}>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 'clamp(54px, 7vw, 92px)',
+              fontWeight: 400,
+              color: '#1d19ea',
+              lineHeight: 1,
+              letterSpacing: '-0.04em',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+            }}
+          >
+            templates
+          </h1>
+          <img
+            src="/pixel-pencil.png"
+            alt="Pencils"
+            style={{
+              height: 'clamp(68px, 8.5vw, 102px)',
+              width: 'auto',
+              objectFit: 'contain',
+              userSelect: 'none',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+
+        {/* ── Main Workspace Content Grid ── */}
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: '40px',
+          }}
+        >
+          {/* Left Column: Stacked Card + Click to Edit Arrow + Label */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              {/* Stacked Card Preview Button - ONLY this redirects to editor */}
               <div
-                key={tmpl.id}
-                onClick={() => {
-                  onSelectTemplate(tmpl.id);
-                  onClose();
+                onClick={onSelectTemplate}
+                style={{
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease',
+                  userSelect: 'none',
                 }}
-                className={`group relative cursor-pointer rounded-xl border p-4 transition-all flex flex-col justify-between ${
-                  isSelected
-                    ? 'border-sky-500 bg-sky-500/10 ring-2 ring-sky-500/30'
-                    : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-800/50'
-                }`}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.03)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+                title="Click card to edit"
               >
-                <div>
-                  {/* Category Badge */}
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
-                      {tmpl.category}
-                    </span>
-                    {isSelected && (
-                      <span className="flex items-center gap-1 text-xs font-bold text-sky-400 bg-sky-500/20 px-2 py-0.5 rounded-md">
-                        <Check className="w-3.5 h-3.5" /> Active
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Thumbnail Art Mockup */}
-                  <div className="aspect-[638/1000] w-full rounded-lg overflow-hidden border border-slate-700/60 relative bg-slate-900 group-hover:scale-[1.02] transition-transform duration-300">
-                    <img
-                      src={tmpl.backgroundFront}
-                      alt={tmpl.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent flex items-end p-4">
-                      <img src={tmpl.backgroundFront} className="hidden" alt="preload" />
-                    </div>
-                  </div>
-
-                  {/* Title & Description */}
-                  <h3 className="mt-4 font-bold text-slate-100 text-base group-hover:text-sky-400 transition">
-                    {tmpl.name}
-                  </h3>
-                  <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                    {tmpl.description}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                  <span>Aspect: Vertical 638x1000</span>
-                  <span className="text-sky-400 font-semibold group-hover:underline">
-                    {isSelected ? 'Currently Selected' : 'Use Template →'}
-                  </span>
-                </div>
+                <img
+                  src="/oscorp-card-stacked.png"
+                  alt="TASM Oscorp Staff ID Card Stack"
+                  style={{
+                    width: 'clamp(200px, 22vw, 270px)',
+                    height: 'auto',
+                    display: 'block',
+                  }}
+                />
               </div>
-            );
-          })}
+
+              {/* Click to Edit Arrow & Label - NON INTERACTIVE (No redirect) */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  marginLeft: '28px',
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                }}
+              >
+                <CurvedArrow />
+                <span
+                  style={{
+                    fontSize: 'clamp(18px, 1.8vw, 24px)',
+                    color: '#000',
+                    marginTop: '4px',
+                    marginLeft: '135px',
+                    whiteSpace: 'nowrap',
+                    fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                  }}
+                >
+                  click to edit!
+                </span>
+              </div>
+            </div>
+
+            {/* Template Title Label */}
+            <h3
+              style={{
+                margin: '24px 0 0 26px',
+                fontSize: 'clamp(22px, 2.2vw, 28px)',
+                fontWeight: 400,
+                color: '#1d19ea',
+                letterSpacing: '-0.02em',
+                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              }}
+            >
+              TASM : Oscorp Staff ID
+            </h3>
+          </div>
+
+          {/* Right Column: More Coming Soon + Interactive Cat */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              marginTop: '60px',
+              marginRight: '40px',
+              userSelect: 'none',
+            }}
+          >
+            <img
+              src="/pixel-cat.png"
+              alt="Pixel Cat"
+              onClick={handleCatClick}
+              className={isCatAnimating ? 'cat-animate' : ''}
+              style={{
+                width: 'clamp(48px, 5vw, 68px)',
+                height: 'auto',
+                objectFit: 'contain',
+                cursor: 'pointer',
+                transition: 'transform 0.15s ease',
+              }}
+              title="Click me to meow!"
+            />
+            <span
+              style={{
+                fontSize: 'clamp(22px, 2.4vw, 30px)',
+                fontWeight: 400,
+                color: '#000',
+                letterSpacing: '-0.02em',
+                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              }}
+            >
+              more coming soon!!
+            </span>
+          </div>
         </div>
       </div>
     </div>
