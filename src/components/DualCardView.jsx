@@ -33,7 +33,7 @@ export default function DualCardView({
             userData,
             croppedPhotoUrl,
             side: 'front',
-            scale: template.exportScale || 2,
+            scale: 0.8, // Fast, crisp 4x-Retina screen preview (1212 x 1920 px)
             isCustomMode,
             isEditingName: editingField === 'name',
             backVersion,
@@ -48,7 +48,7 @@ export default function DualCardView({
             userData,
             croppedPhotoUrl,
             side: 'back',
-            scale: template.exportScale || 2,
+            scale: 0.8, // Fast, crisp 4x-Retina screen preview (1212 x 1920 px)
             isCustomMode,
             backVersion,
             showCuttingGuides
@@ -131,7 +131,7 @@ export default function DualCardView({
       {/* Side-by-Side Cards Grid */}
       <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 w-full py-1">
         {/* FRONT CARD CONTAINER */}
-        <div className="relative w-[240px] sm:w-[270px] md:w-[300px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white shrink-0">
+        <div className="relative w-[210px] xs:w-[250px] sm:w-[270px] md:w-[300px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white shrink-0">
           <canvas
             ref={frontCanvasRef}
             className="w-full h-full object-contain block"
@@ -186,7 +186,7 @@ export default function DualCardView({
         </div>
 
         {/* BACK CARD CONTAINER */}
-        <div className="relative w-[240px] sm:w-[270px] md:w-[300px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white shrink-0">
+        <div className="relative w-[210px] xs:w-[250px] sm:w-[270px] md:w-[300px] aspect-[1515/2400] rounded-3xl overflow-hidden card-shadow border border-slate-300 bg-white shrink-0">
           <canvas
             ref={backCanvasRef}
             className="w-full h-full object-contain block"
@@ -208,7 +208,7 @@ export default function DualCardView({
 
       {/* ── SIMPLE CLEAN TOGGLES (No outer container box) ── */}
       <div className="w-full max-w-[600px] mx-auto my-3 px-4 flex flex-col items-center justify-center gap-2.5 select-none shrink-0 font-sans">
-        <div className="flex items-center justify-center gap-8 sm:gap-14">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-14">
           
           {/* 1. CUTTING LINES TOGGLE */}
           <div className="flex items-center gap-2.5">

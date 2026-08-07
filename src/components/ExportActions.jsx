@@ -88,15 +88,15 @@ export default function ExportActions({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="flex items-center justify-center gap-4 sm:gap-8 w-full max-w-xl my-2">
+    <div className="flex flex-col items-center justify-center w-full pb-3 sm:pb-0">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 w-full max-w-xl my-2 px-4">
         {!isCustomMode ? (
           // DEFAULT MODE BUTTONS
           <>
             <button
               onClick={handleDownloadZip}
               disabled={isExporting}
-              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer disabled:opacity-50 min-w-[190px] sm:min-w-[240px]"
+              className="btn-wireframe w-full sm:w-auto px-6 sm:px-14 py-3 sm:py-4 text-sm sm:text-lg tracking-tight shadow-md cursor-pointer disabled:opacity-50 min-w-[180px] sm:min-w-[240px]"
             >
               {isExporting ? 'zipping...' : 'download default'}
             </button>
@@ -109,7 +109,7 @@ export default function ExportActions({
                   setIsCustomMode(true);
                 }
               }}
-              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer min-w-[190px] sm:min-w-[240px]"
+              className="btn-wireframe w-full sm:w-auto px-6 sm:px-14 py-3 sm:py-4 text-sm sm:text-lg tracking-tight shadow-md cursor-pointer min-w-[180px] sm:min-w-[240px]"
             >
               create your own
             </button>
@@ -119,7 +119,7 @@ export default function ExportActions({
           <>
             <button
               onClick={handleGoBackToDefault}
-              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer min-w-[190px] sm:min-w-[240px]"
+              className="btn-wireframe w-full sm:w-auto px-6 sm:px-14 py-3 sm:py-4 text-sm sm:text-lg tracking-tight shadow-md cursor-pointer min-w-[180px] sm:min-w-[240px]"
             >
               go back to default
             </button>
@@ -127,7 +127,7 @@ export default function ExportActions({
             <button
               onClick={handleDownloadZip}
               disabled={isExporting}
-              className="btn-wireframe px-8 sm:px-14 py-3.5 sm:py-4 text-base sm:text-lg tracking-tight shadow-md cursor-pointer disabled:opacity-50 min-w-[190px] sm:min-w-[240px]"
+              className="btn-wireframe w-full sm:w-auto px-6 sm:px-14 py-3 sm:py-4 text-sm sm:text-lg tracking-tight shadow-md cursor-pointer disabled:opacity-50 min-w-[180px] sm:min-w-[240px]"
             >
               {isExporting ? 'zipping...' : 'download custom id'}
             </button>

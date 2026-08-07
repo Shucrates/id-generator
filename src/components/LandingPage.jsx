@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 
 const assets = {
   object: 'https://www.figma.com/api/mcp/asset/9f438ed3-f0cc-4075-878d-2031e9b4a13d.png',
@@ -47,8 +47,6 @@ function Draggable({ children, style, driftStyle, id }) {
     setDragging(false);
   }, []);
 
-  // When dragging, disable parallax drift and use direct position.
-  // When idle, combine drift + drag offset.
   const combinedTransform = dragging
     ? `translate(${offset.x}px, ${offset.y}px)`
     : `translate(${offset.x}px, ${offset.y}px) ${driftStyle?.transform || ''}`;
@@ -79,6 +77,7 @@ export default function LandingPage({ onBrowseTemplates }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
+  // Mouse movement parallax for desktop
   const handleMouseMove = useCallback((e) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -87,7 +86,30 @@ export default function LandingPage({ onBrowseTemplates }) {
     setMouse({ x, y });
   }, []);
 
-  // Per-element parallax drift
+  // Gyroscope motion parallax for mobile devices
+  useEffect(() => {
+    const handleOrientation = (e) => {
+      if (e.gamma !== null && e.beta !== null) {
+        // gamma: left-to-right tilt in degrees [-90, 90]
+        // beta: front-to-back tilt in degrees [-180, 180]
+        const x = Math.min(Math.max(e.gamma / 25, -1.2), 1.2);
+        const y = Math.min(Math.max((e.beta - 40) / 25, -1.2), 1.2);
+        setMouse({ x, y });
+      }
+    };
+
+    if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+        window.removeEventListener('deviceorientation', handleOrientation, true);
+      }
+    };
+  }, []);
+
+  // Per-element parallax drift calculation
   const drift = (dx, dy, rotate = 0) => ({
     transform: `translate(${mouse.x * dx}px, ${mouse.y * dy}px) rotate(${mouse.x * rotate}deg)`,
     transition: 'transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -106,15 +128,184 @@ export default function LandingPage({ onBrowseTemplates }) {
         fontFamily: "'Arial Narrow', 'Arial', sans-serif",
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      {/* ── MOBILE VIEWPORT LAYOUT (< 640px) matching reference screenshot ── */}
+      <div className="block sm:hidden w-full h-full relative select-none">
+        {/* 1. ?????? text (Top Left) */}
+        <Draggable id="m-question" driftStyle={drift(12, 8, -2)} style={{ position: 'absolute', left: '7%', top: '6%' }}>
+          <span style={{ color: '#1d19ea', fontSize: '32px', fontWeight: 400, lineHeight: 1 }}>
+            ??????
+          </span>
+        </Draggable>
+
+        {/* 2. CD Disc (Top Right) */}
+        <Draggable id="m-disc" driftStyle={drift(-14, -8, 4)} style={{ position: 'absolute', right: '6%', top: '5%' }}>
+          <img src={assets.disc} alt="" draggable={false} style={{ width: '75px', height: 'auto', objectFit: 'contain' }} />
+        </Draggable>
+
+        {/* 3. Warning Icon (Upper Center) */}
+        <Draggable id="m-warning" driftStyle={drift(10, 15, 3)} style={{ position: 'absolute', left: '26%', top: '19%' }}>
+          <img src={assets.warning} alt="" draggable={false} style={{ width: '64px', height: 'auto', objectFit: 'contain' }} />
+        </Draggable>
+
+        {/* 4. Center Title (Two Lines) + Subtitle */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '38%',
+            left: '50%',
+            transform: `translateX(-50%) translate(${mouse.x * 4}px, ${mouse.y * 3}px)`,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            width: '92%',
+            zIndex: 20,
+            transition: 'transform 0.45s ease',
+          }}
+        >
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 'clamp(44px, 12.5vw, 62px)',
+              color: '#1d19ea',
+              fontWeight: 400,
+              lineHeight: 1.05,
+              letterSpacing: '-0.04em',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+            }}
+          >
+            create your own
+            <br />
+            (custom id)
+          </h1>
+
+          <div className="relative flex items-center justify-center mt-3 z-30 pointer-events-auto">
+            <a
+              href="https://www.instagram.com/shuisbored/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                margin: 0,
+                fontSize: '22px',
+                color: '#12ba10',
+                fontWeight: 400,
+                lineHeight: 1,
+                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                textDecoration: 'none',
+                cursor: 'pointer',
+              }}
+              className="hover:underline"
+            >
+              made by @shuisbored
+            </a>
+          </div>
+        </div>
+
+        {/* 5. Pixel Glasses (Right edge of Subtitle) */}
+        <Draggable id="m-glasses" driftStyle={drift(-15, -6, -3)} style={{ position: 'absolute', right: '3%', top: '48%' }}>
+          <img src={assets.object} alt="" draggable={false} style={{ width: '48px', height: 'auto', objectFit: 'contain' }} />
+        </Draggable>
+
+        {/* 6. Sparkle / Star (Middle Left) */}
+        <Draggable id="m-star" driftStyle={drift(15, 12, 2)} style={{ position: 'absolute', left: '4%', top: '56%' }}>
+          <img src={assets.star} alt="" draggable={false} style={{ width: '68px', height: 'auto', objectFit: 'contain' }} />
+        </Draggable>
+
+        {/* 7. Stacked Win95 Buttons (Middle Lower Center) */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '61%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '14px',
+            zIndex: 30,
+            width: '210px',
+          }}
+        >
+          <button
+            onClick={onBrowseTemplates}
+            style={{
+              width: '100%',
+              height: '48px',
+              border: 'none',
+              background: BG_DEFAULT,
+              color: 'black',
+              fontSize: '18px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              boxShadow: SHADOW_DEFAULT,
+              userSelect: 'none',
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.boxShadow = SHADOW_PRESSED;
+              e.currentTarget.style.background = BG_PRESSED;
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.boxShadow = SHADOW_DEFAULT;
+              e.currentTarget.style.background = BG_DEFAULT;
+            }}
+          >
+            browse templates
+          </button>
+
+          <a
+            href="https://buymeacoffee.com/shuisbored"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              width: '100%',
+              height: '48px',
+              border: 'none',
+              background: BG_DEFAULT,
+              color: 'black',
+              fontSize: '18px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              textDecoration: 'none',
+              boxShadow: SHADOW_DEFAULT,
+              userSelect: 'none',
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.boxShadow = SHADOW_PRESSED;
+              e.currentTarget.style.background = BG_PRESSED;
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.boxShadow = SHADOW_DEFAULT;
+              e.currentTarget.style.background = BG_DEFAULT;
+            }}
+          >
+            buy me a coffee
+          </a>
+        </div>
+
+        {/* 8. Coffee Mug (Bottom Left) */}
+        <Draggable id="m-mug" driftStyle={drift(14, 10, -2)} style={{ position: 'absolute', left: '10%', bottom: '11%' }}>
+          <img src={assets.mug} alt="" draggable={false} style={{ width: '46px', height: 'auto', objectFit: 'contain' }} />
+        </Draggable>
+
+        {/* 9. Spotify + Soundwave (Bottom Right) */}
+        <Draggable id="m-spotify" driftStyle={drift(-10, 8, 1)} style={{ position: 'absolute', right: '5%', bottom: '7%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', pointerEvents: 'none' }}>
+            <img src={assets.spotify} alt="" draggable={false} style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+            <img src={assets.wave} alt="" draggable={false} style={{ width: '135px', height: '32px', objectFit: 'contain' }} />
+          </div>
+        </Draggable>
+      </div>
+
+      {/* ── DESKTOP VIEWPORT LAYOUT (>= 640px) ── */}
+      <div className="hidden sm:flex absolute inset-0 items-center justify-center">
         <div
           style={{
             position: 'relative',
@@ -124,8 +315,6 @@ export default function LandingPage({ onBrowseTemplates }) {
             maxHeight: '100vh',
           }}
         >
-          {/* ── Draggable decorative elements ── */}
-
           {/* 1. ?????? text */}
           <Draggable
             id="question"
@@ -225,7 +414,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               left: '50%',
               top: '40.25%',
               transform: `translateX(-50%) translate(${mouse.x * 1.5}px, ${mouse.y * 1}px)`,
-              fontSize: 'clamp(28px, 6.3vw, 81px)',
+              fontSize: 'clamp(36px, 7.5vw, 96px)',
               color: '#1d19ea',
               fontWeight: 400,
               lineHeight: 1,
@@ -241,14 +430,17 @@ export default function LandingPage({ onBrowseTemplates }) {
             create your own (custom id)
           </h1>
 
-          {/* 6. Subtitle (not draggable) */}
-          <p
+          {/* 6. Subtitle (clickable link to Instagram) */}
+          <a
+            href="https://www.instagram.com/shuisbored/"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               position: 'absolute',
               left: '50%',
-              top: '52.5%',
+              top: '53.5%',
               transform: `translateX(-50%) translate(${mouse.x * 2}px, ${mouse.y * 1.5}px)`,
-              fontSize: 'clamp(14px, 2vw, 26px)',
+              fontSize: 'clamp(16px, 2.2vw, 28px)',
               color: '#12ba10',
               fontWeight: 400,
               lineHeight: 1,
@@ -256,12 +448,16 @@ export default function LandingPage({ onBrowseTemplates }) {
               userSelect: 'none',
               margin: 0,
               fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              textDecoration: 'none',
+              cursor: 'pointer',
               transition: 'transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              zIndex: 10,
+              zIndex: 30,
+              pointerEvents: 'auto',
             }}
+            className="hover:underline"
           >
             made by @shuisbored
-          </p>
+          </a>
 
           {/* 7. Browse Templates button (not draggable) */}
           <button

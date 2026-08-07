@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 
 function CurvedArrow() {
   return (
-    <svg width="160" height="50" viewBox="0 0 160 50" fill="none" className="select-none pointer-events-none">
+    <svg width="140" height="45" viewBox="0 0 160 50" fill="none" className="select-none pointer-events-none shrink-0">
       <path
         d="M 150 42 C 100 10, 50 12, 12 24"
         stroke="#000000"
@@ -70,7 +70,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '40px 60px',
+          padding: 'clamp(20px, 4vw, 40px) clamp(16px, 5vw, 60px)',
           boxSizing: 'border-box',
           minHeight: '100vh',
           display: 'flex',
@@ -101,11 +101,11 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
         </div>
 
         {/* ── Header Title + Pencil Icon ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '60px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
           <h1
             style={{
               margin: 0,
-              fontSize: 'clamp(54px, 7vw, 92px)',
+              fontSize: 'clamp(44px, 7vw, 92px)',
               fontWeight: 400,
               color: '#1d19ea',
               lineHeight: 1,
@@ -119,7 +119,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
             src="/pixel-pencil.png"
             alt="Pencils"
             style={{
-              height: 'clamp(68px, 8.5vw, 102px)',
+              height: 'clamp(50px, 7.5vw, 102px)',
               width: 'auto',
               objectFit: 'contain',
               userSelect: 'none',
@@ -136,12 +136,12 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
             flexWrap: 'wrap',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
-            gap: '40px',
+            gap: '30px',
           }}
         >
           {/* Left Column: Stacked Card + Click to Edit Arrow + Label */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxWidth: '100%' }}>
+            <div className="flex flex-row items-center gap-2 sm:gap-7">
               {/* Stacked Card Preview Button - ONLY this redirects to editor */}
               <div
                 onClick={onSelectTemplate}
@@ -162,7 +162,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                   src="/oscorp-card-stacked.png"
                   alt="TASM Oscorp Staff ID Card Stack"
                   style={{
-                    width: 'clamp(200px, 22vw, 270px)',
+                    width: 'clamp(160px, 22vw, 270px)',
                     height: 'auto',
                     display: 'block',
                   }}
@@ -175,7 +175,6 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-start',
-                  marginLeft: '28px',
                   userSelect: 'none',
                   pointerEvents: 'none',
                 }}
@@ -183,10 +182,10 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                 <CurvedArrow />
                 <span
                   style={{
-                    fontSize: 'clamp(18px, 1.8vw, 24px)',
+                    fontSize: 'clamp(14px, 1.8vw, 24px)',
                     color: '#000',
-                    marginTop: '4px',
-                    marginLeft: '135px',
+                    marginTop: '2px',
+                    marginLeft: 'clamp(90px, 11vw, 180px)',
                     whiteSpace: 'nowrap',
                     fontFamily: "'Arial Narrow', 'Arial', sans-serif",
                   }}
@@ -199,8 +198,8 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
             {/* Template Title Label */}
             <h3
               style={{
-                margin: '24px 0 0 26px',
-                fontSize: 'clamp(22px, 2.2vw, 28px)',
+                margin: '20px 0 0 10px',
+                fontSize: 'clamp(20px, 2.2vw, 28px)',
                 fontWeight: 400,
                 color: '#1d19ea',
                 letterSpacing: '-0.02em',
@@ -217,8 +216,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
-              marginTop: '60px',
-              marginRight: '40px',
+              marginTop: '30px',
               userSelect: 'none',
             }}
           >
@@ -228,7 +226,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
               onClick={handleCatClick}
               className={isCatAnimating ? 'cat-animate' : ''}
               style={{
-                width: 'clamp(48px, 5vw, 68px)',
+                width: 'clamp(44px, 5vw, 68px)',
                 height: 'auto',
                 objectFit: 'contain',
                 cursor: 'pointer',
@@ -238,7 +236,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
             />
             <span
               style={{
-                fontSize: 'clamp(22px, 2.4vw, 30px)',
+                fontSize: 'clamp(20px, 2.4vw, 30px)',
                 fontWeight: 400,
                 color: '#000',
                 letterSpacing: '-0.02em',

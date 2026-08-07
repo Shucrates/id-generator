@@ -43,6 +43,25 @@ export default function App() {
     window.history.pushState({ screen }, '', `/${hash}`);
   }, []);
 
+  /* ── Pre-cache template images for instant rendering ── */
+  useEffect(() => {
+    const urls = [
+      '/richard-parker-default-front.png',
+      '/richard-parker-default-front-notch.png',
+      '/oscorp-custom-front-clean.png',
+      '/oscorp-custom-front-clean-notch.png',
+      '/oscorp-back-symbol.png',
+      '/oscorp-back-symbol-notch.png',
+      '/oscorp-custom-back.png',
+      '/richard-parker-default-back.png',
+      '/oscorp-back-qr-notch.png'
+    ];
+    urls.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, []);
+
   /* ── Listen for browser back / forward ── */
   useEffect(() => {
     const onPopState = () => {
@@ -109,14 +128,14 @@ export default function App() {
     );
   }
 
-  // Screen 3: Card Editor Page (Fits completely in 100vh window)
+  // Screen 3: Card Editor Page (Fits completely in 100vh window on desktop, scrollable on mobile)
   return (
-    <div className="h-screen max-h-screen overflow-hidden bg-wireframe text-slate-900 flex flex-col justify-between items-center py-2 px-4 font-sans selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen sm:h-screen sm:max-h-screen overflow-y-auto sm:overflow-hidden bg-wireframe text-slate-900 flex flex-col justify-between items-center py-2 px-4 font-sans selection:bg-slate-900 selection:text-white">
       {/* Top Header Title */}
-      <div className="w-full relative max-w-6xl mx-auto flex items-center justify-center pt-2">
+      <div className="w-full relative max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center pt-3 pb-1 px-4">
         <button
           onClick={handleBackToTemplates}
-          className="absolute left-6 top-6 inline-flex items-center gap-2.5 text-[clamp(20px,2vw,26px)] font-normal text-black hover:opacity-75 transition cursor-pointer select-none border-none bg-transparent p-0"
+          className="self-start sm:absolute sm:left-6 sm:top-6 inline-flex items-center gap-2 text-[clamp(18px,2vw,26px)] font-normal text-black hover:opacity-75 transition cursor-pointer select-none border-none bg-transparent p-0 z-20 mb-2 sm:mb-0"
           style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           title="Back to Templates"
         >

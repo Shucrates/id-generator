@@ -24,10 +24,10 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
       style={{
         position: 'relative',
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         backgroundColor: '#fafafa',
         fontFamily: "'Arial Narrow', 'Arial', sans-serif",
-        overflow: 'hidden',
+        overflowX: 'hidden',
         boxSizing: 'border-box',
         userSelect: 'none',
       }}
@@ -47,14 +47,14 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
       `}</style>
 
       {/* ── Top Left: Back to Templates Button ── */}
-      <div style={{ position: 'absolute', top: '40px', left: '60px', zIndex: 10 }}>
+      <div style={{ position: 'absolute', top: 'clamp(20px, 4vw, 40px)', left: 'clamp(20px, 4vw, 60px)', zIndex: 10 }}>
         <button
           onClick={onBackToTemplates}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '12px',
-            fontSize: 'clamp(20px, 2.2vw, 26px)',
+            gap: '10px',
+            fontSize: 'clamp(18px, 4vw, 26px)',
             fontWeight: 400,
             color: '#000000',
             background: 'none',
@@ -72,25 +72,25 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
       <div
         style={{
           position: 'absolute',
-          top: '50%',
+          top: '48%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '36px',
-          width: '90%',
+          gap: '28px',
+          width: '92%',
           maxWidth: '900px',
         }}
       >
         <h1
           style={{
             margin: 0,
-            fontSize: 'clamp(44px, 6vw, 76px)',
+            fontSize: 'clamp(32px, 6vw, 76px)',
             fontWeight: 400,
             color: '#1d19ea',
-            lineHeight: 1,
+            lineHeight: 1.1,
             letterSpacing: '-0.03em',
             textAlign: 'center',
             fontFamily: "'Arial Narrow', 'Arial', sans-serif",
@@ -100,10 +100,10 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
         </h1>
 
         {/* 3 Buttons Row matching existing site button styles */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 w-full max-w-xs sm:max-w-none px-4">
           <button
             onClick={onMakeAnother}
-            className="btn-wireframe px-8 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[170px]"
+            className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
             make another
@@ -111,7 +111,7 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
 
           <button
             onClick={() => window.open('https://buymeacoffee.com', '_blank')}
-            className="btn-wireframe px-8 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[170px]"
+            className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
             buy me a coffee
@@ -119,7 +119,7 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
 
           <button
             onClick={() => window.open('https://instagram.com/shuisbored', '_blank')}
-            className="btn-wireframe px-8 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[170px]"
+            className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
             follow me
@@ -131,8 +131,8 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
       <div
         style={{
           position: 'absolute',
-          bottom: '36px',
-          right: '50px',
+          bottom: '20px',
+          right: '20px',
           display: 'flex',
           alignItems: 'flex-end',
         }}
@@ -143,7 +143,7 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
           onClick={handleCatClick}
           className={isCatAnimating ? 'cat-animate' : ''}
           style={{
-            height: 'clamp(110px, 14vw, 170px)',
+            height: 'clamp(80px, 14vw, 170px)',
             width: 'auto',
             objectFit: 'contain',
             cursor: 'pointer',
