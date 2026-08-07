@@ -7,6 +7,7 @@ import LandingPage from './components/LandingPage';
 import TemplatePicker from './components/TemplatePicker';
 import ThankYouPage from './components/ThankYouPage';
 import { TEMPLATES } from './config/templates';
+import { playRetroClickSound } from './utils/soundUtils';
 import { ArrowLeft } from 'lucide-react';
 
 /* ── Map URL hash → screen name ── */
@@ -89,6 +90,7 @@ export default function App() {
   };
 
   const handleBackToTemplates = () => {
+    playRetroClickSound();
     navigateTo('templates');
   };
 

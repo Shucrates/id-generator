@@ -2,26 +2,27 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import JSZip from 'jszip';
 import { renderCardCanvas } from '../utils/canvasRenderer';
+import { playRetroClickSound } from '../utils/soundUtils';
 
 function PixelDownloadIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M11 2h2v10h3l-4 4-4-4h3V2zM4 18h16v2H4v-2z" />
     </svg>
   );
 }
 
-function PixelPencilIcon() {
+function PixelPaintbrushIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
-      <path d="M14 2l4 4-10 10H4v-4L14 2zm1 3l-1-1 2-2 1 1-2 2zM6 14v2h2l8-8-2-2-8 8z" />
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+      <path d="M18 2h4v4h-4V2zM14 6h4v4h-4V6zM10 10h4v4h-4v-4zM6 14h4v4H6v-4zM2 18h4v4H2v-4zM4 14h2v2H4v-2zm4-4h2v2H8v-2zm4-4h2v2h-2V6z" />
     </svg>
   );
 }
 
 function PixelUndoIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M13 5v4H7a5 5 0 0 0-5 5v5h2v-5a3 3 0 0 1 3-3h6v4l6-5-6-5z" />
     </svg>
   );
@@ -68,6 +69,7 @@ export default function ExportActions({
   };
 
   const handleDownloadZip = async () => {
+    playRetroClickSound();
     setIsExporting(true);
     try {
       const zip = new JSZip();
@@ -108,6 +110,7 @@ export default function ExportActions({
   };
 
   const handleGoBackToDefault = () => {
+    playRetroClickSound();
     setIsCustomMode(false);
   };
 
@@ -128,6 +131,7 @@ export default function ExportActions({
 
             <button
               onClick={() => {
+                playRetroClickSound();
                 if (onCustomModeTrigger) {
                   onCustomModeTrigger();
                 } else {
@@ -136,7 +140,11 @@ export default function ExportActions({
               }}
               className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[180px] sm:min-w-[240px]"
             >
-              <PixelPencilIcon />
+              <img
+                src="/pixel-paintbrush-icon.png"
+                alt="Paintbrush Icon"
+                className="w-[24px] h-[24px] sm:w-[28px] sm:h-[28px] object-contain shrink-0 select-none pointer-events-none"
+              />
               create your own
             </button>
           </>

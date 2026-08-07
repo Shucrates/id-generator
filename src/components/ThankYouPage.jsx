@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
+import { playRetroClickSound } from '../utils/soundUtils';
 
 function PixelInstagramIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h16V4H4zm8 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5-3.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
     </svg>
   );
@@ -10,7 +11,7 @@ function PixelInstagramIcon() {
 
 function PixelCoffeeIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M2 19h18v2H2v-2zM4 3h12v10a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V3zm2 2v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5H6zm10 2h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3V7zm2 2v2h1V9h-1z" />
     </svg>
   );
@@ -18,7 +19,7 @@ function PixelCoffeeIcon() {
 
 function PixelPlusIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7V4z" />
     </svg>
   );
@@ -73,7 +74,10 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
       {/* ── Top Left: Back to Templates Button ── */}
       <div style={{ position: 'absolute', top: 'clamp(20px, 4vw, 40px)', left: 'clamp(20px, 4vw, 60px)', zIndex: 10 }}>
         <button
-          onClick={onBackToTemplates}
+          onClick={(e) => {
+            playRetroClickSound();
+            if (onBackToTemplates) onBackToTemplates(e);
+          }}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -126,7 +130,10 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
         {/* 3 Buttons Row matching existing site button styles */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 w-full max-w-xs sm:max-w-none px-4">
           <button
-            onClick={onMakeAnother}
+            onClick={(e) => {
+              playRetroClickSound();
+              if (onMakeAnother) onMakeAnother(e);
+            }}
             className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
@@ -134,7 +141,10 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
           </button>
 
           <button
-            onClick={() => window.open('https://buymeacoffee.com/shuisbored', '_blank')}
+            onClick={() => {
+              playRetroClickSound();
+              window.open('https://buymeacoffee.com/shuisbored', '_blank');
+            }}
             className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
@@ -142,7 +152,10 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
           </button>
 
           <button
-            onClick={() => window.open('https://www.instagram.com/shuisbored/', '_blank')}
+            onClick={() => {
+              playRetroClickSound();
+              window.open('https://www.instagram.com/shuisbored/', '_blank');
+            }}
             className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >

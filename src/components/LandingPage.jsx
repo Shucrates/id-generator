@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { playRetroClickSound } from '../utils/soundUtils';
 
 const assets = {
   object: 'https://www.figma.com/api/mcp/asset/9f438ed3-f0cc-4075-878d-2031e9b4a13d.png',
@@ -19,7 +20,7 @@ const BG_PRESSED = 'linear-gradient(180deg, #b0b0b0 0%, #a0a0a0 100%)';
 
 function PixelCoffeeIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M2 19h18v2H2v-2zM4 3h12v10a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V3zm2 2v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5H6zm10 2h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3V7zm2 2v2h1V9h-1z" />
     </svg>
   );
@@ -27,7 +28,7 @@ function PixelCoffeeIcon() {
 
 function PixelFolderIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
       <path d="M2 4h8l2 2h10v14H2V4zm2 4v10h16V8H4z" />
     </svg>
   );
@@ -81,7 +82,7 @@ function Draggable({ children, style, driftStyle, id }) {
         touchAction: 'none',
         pointerEvents: 'auto',
         userSelect: 'none',
-        zIndex: dragging ? 50 : (style?.zIndex || 10),
+        zIndex: dragging ? 50 : (style?.zIndex || 35),
       }}
     >
       {children}
@@ -152,7 +153,7 @@ export default function LandingPage({ onBrowseTemplates }) {
             alignItems: 'center',
             textAlign: 'center',
             width: '92%',
-            zIndex: 20,
+            zIndex: 10,
             transition: 'transform 0.15s ease-out',
           }}
         >
@@ -220,7 +221,10 @@ export default function LandingPage({ onBrowseTemplates }) {
           }}
         >
           <button
-            onClick={onBrowseTemplates}
+            onClick={(e) => {
+              playRetroClickSound();
+              if (onBrowseTemplates) onBrowseTemplates(e);
+            }}
             style={{
               width: '100%',
               height: '48px',
@@ -254,6 +258,7 @@ export default function LandingPage({ onBrowseTemplates }) {
             href="https://buymeacoffee.com/shuisbored"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => playRetroClickSound()}
             style={{
               width: '100%',
               height: '48px',
@@ -456,7 +461,10 @@ export default function LandingPage({ onBrowseTemplates }) {
 
           {/* 7. Browse Templates button (not draggable) */}
           <button
-            onClick={onBrowseTemplates}
+            onClick={(e) => {
+              playRetroClickSound();
+              if (onBrowseTemplates) onBrowseTemplates(e);
+            }}
             style={{
               position: 'absolute',
               left: '50%',
@@ -508,6 +516,7 @@ export default function LandingPage({ onBrowseTemplates }) {
             href="https://buymeacoffee.com/shuisbored"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => playRetroClickSound()}
             style={{
               position: 'absolute',
               left: '50%',

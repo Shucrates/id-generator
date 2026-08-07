@@ -1,6 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { renderCardCanvas } from '../utils/canvasRenderer';
 import { Pencil, Check, X, Link as LinkIcon } from 'lucide-react';
+import { playRetroClickSound } from '../utils/soundUtils';
+
+function PixelScissorsIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-[#1d19ea]">
+      <path d="M6 2a4 4 0 0 0-4 4 4 4 0 0 0 3.1 3.9L9.5 12l-4.4 2.1A4 4 0 0 0 2 18a4 4 0 0 0 4 4 4 4 0 0 0 3.9-3.1L12 14.5l6 6h4v-2l-6-6 6-6V4h-4l-6 6-2.1-4.4A4 4 0 0 0 6 2zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 14a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" />
+    </svg>
+  );
+}
+
+function PixelGearIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-[#1d19ea]">
+      <path d="M9 2h6v3h-6V2zM4 9h3v6H4V9zm13 0h3v6h-3V9zm-8 13h6v-3H9v3zM2 4h4V2H2v4zm16-2v4h4V2h-4zM2 22h4v-4H2v4zm18-4v4h2v-4h-2zM8 8h8v8H8V8zm2 2v4h4v-4h-4z" />
+    </svg>
+  );
+}
 
 export default function DualCardView({
   template,
@@ -67,6 +84,7 @@ export default function DualCardView({
   }, [template, userData, croppedPhotoUrl, isCustomMode, editingField, backVersion, showCuttingGuides]);
 
   const handleFieldClick = (fieldKey) => {
+    playRetroClickSound();
     if (fieldKey === 'photo') {
       if (!isCustomMode) return;
       const fileInput = document.getElementById('wireframe-file-input');
@@ -214,15 +232,21 @@ export default function DualCardView({
           <div className="flex items-center gap-2.5">
             <label
               className="text-[17px] font-bold text-[#1d19ea] flex items-center gap-1.5 leading-none cursor-pointer"
-              onClick={() => setShowCuttingGuides && setShowCuttingGuides(!showCuttingGuides)}
+              onClick={() => {
+                playRetroClickSound();
+                if (setShowCuttingGuides) setShowCuttingGuides(!showCuttingGuides);
+              }}
               style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
             >
-              <span>✂️</span> cutting lines
+              <PixelScissorsIcon /> cutting lines
             </label>
 
             {/* 3D Retro Bevel Pill Toggle Switch */}
             <div
-              onClick={() => setShowCuttingGuides && setShowCuttingGuides(!showCuttingGuides)}
+              onClick={() => {
+                playRetroClickSound();
+                if (setShowCuttingGuides) setShowCuttingGuides(!showCuttingGuides);
+              }}
               className="relative w-14 h-7 rounded-full cursor-pointer transition-all flex items-center px-0.5 shrink-0"
               style={{
                 background: showCuttingGuides
@@ -248,17 +272,23 @@ export default function DualCardView({
             <label
               className="text-[17px] font-bold text-[#1d19ea] flex items-center gap-1.5 leading-none cursor-pointer"
               onClick={() => {
+                playRetroClickSound();
                 const nextVersion = backVersion === 'custom-qr' ? 'oscorp-symbol' : 'custom-qr';
                 if (setBackVersion) setBackVersion(nextVersion);
               }}
               style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
             >
-              <span>⚙️</span> custom qr
+              <img
+                src="/pixel-qr-icon.png"
+                alt="Custom QR Icon"
+                className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] object-contain shrink-0 select-none pointer-events-none"
+              /> custom qr
             </label>
 
             {/* 3D Retro Bevel Pill Toggle Switch */}
             <div
               onClick={() => {
+                playRetroClickSound();
                 const nextVersion = backVersion === 'custom-qr' ? 'oscorp-symbol' : 'custom-qr';
                 if (setBackVersion) setBackVersion(nextVersion);
               }}

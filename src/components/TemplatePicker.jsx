@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { playRetroClickSound } from '../utils/soundUtils';
 
 function CurvedArrow() {
   return (
@@ -80,7 +81,10 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
         {/* ── Top Row: Back Button ── */}
         <div style={{ marginBottom: '20px' }}>
           <button
-            onClick={onBack}
+            onClick={(e) => {
+              playRetroClickSound();
+              if (onBack) onBack(e);
+            }}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -144,7 +148,10 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
             <div className="flex flex-row items-center gap-2 sm:gap-7">
               {/* Stacked Card Preview Button - ONLY this redirects to editor */}
               <div
-                onClick={onSelectTemplate}
+                onClick={(e) => {
+                  playRetroClickSound();
+                  if (onSelectTemplate) onSelectTemplate(e);
+                }}
                 style={{
                   cursor: 'pointer',
                   transition: 'transform 0.2s ease',
