@@ -134,7 +134,7 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
           </button>
 
           <button
-            onClick={() => window.open('https://buymeacoffee.com', '_blank')}
+            onClick={() => window.open('https://buymeacoffee.com/shuisbored', '_blank')}
             className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
@@ -142,7 +142,7 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
           </button>
 
           <button
-            onClick={() => window.open('https://instagram.com/shuisbored', '_blank')}
+            onClick={() => window.open('https://www.instagram.com/shuisbored/', '_blank')}
             className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >

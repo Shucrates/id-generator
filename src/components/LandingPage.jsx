@@ -136,7 +136,7 @@ export default function LandingPage({ onBrowseTemplates }) {
         </Draggable>
 
         {/* 3. Warning Icon (Upper Center) */}
-        <Draggable id="m-warning" driftStyle={drift(20, 30, 5)} style={{ position: 'absolute', left: '26%', top: '19%' }}>
+        <Draggable id="m-warning" driftStyle={drift(20, 30, 5)} style={{ position: 'absolute', left: '26%', top: '25%' }}>
           <img src={assets.warning} alt="" draggable={false} style={{ width: '64px', height: 'auto', objectFit: 'contain' }} />
         </Draggable>
 
