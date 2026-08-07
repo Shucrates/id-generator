@@ -91,35 +91,7 @@ function Draggable({ children, style, driftStyle, id }) {
 
 export default function LandingPage({ onBrowseTemplates }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [needsPermission, setNeedsPermission] = useState(false);
   const containerRef = useRef(null);
-  const targetMouse = useRef({ x: 0, y: 0 });
-  const currentMouse = useRef({ x: 0, y: 0 });
-  const animFrameId = useRef(null);
-
-  // 60fps LERP interpolation loop for smooth motion physics
-  useEffect(() => {
-    let active = true;
-    const loop = () => {
-      if (!active) return;
-      // Smooth linear interpolation (lerp factor: 0.1)
-      currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.1;
-      currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.1;
-
-      setMouse({
-        x: currentMouse.current.x,
-        y: currentMouse.current.y,
-      });
-
-      animFrameId.current = requestAnimationFrame(loop);
-    };
-    loop();
-
-    return () => {
-      active = false;
-      if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
-    };
-  }, []);
 
   // Mouse movement parallax for desktop
   const handleMouseMove = useCallback((e) => {
@@ -127,63 +99,13 @@ export default function LandingPage({ onBrowseTemplates }) {
     if (!rect) return;
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    targetMouse.current = { x, y };
+    setMouse({ x, y });
   }, []);
-
-  // Device orientation event handler
-  const handleOrientation = useCallback((e) => {
-    const gamma = e.gamma || 0; // [-90, 90] left-right tilt
-    const beta = e.beta || 0;   // [-180, 180] front-back tilt
-
-    // Calculate normalized tilt offsets centered around natural device holding angle (~45 deg pitch)
-    const normX = Math.min(Math.max(gamma / 18, -2.0), 2.0);
-    const normY = Math.min(Math.max((beta - 40) / 18, -2.0), 2.0);
-
-    targetMouse.current = { x: normX, y: normY };
-  }, []);
-
-  // Request Gyro permission (iOS 13+) or attach listener directly
-  const enableGyro = useCallback(async () => {
-    if (
-      typeof DeviceOrientationEvent !== 'undefined' &&
-      typeof DeviceOrientationEvent.requestPermission === 'function'
-    ) {
-      try {
-        const state = await DeviceOrientationEvent.requestPermission();
-        if (state === 'granted') {
-          setNeedsPermission(false);
-          window.addEventListener('deviceorientation', handleOrientation, true);
-        }
-      } catch (err) {
-        console.log('Gyro permission error:', err);
-      }
-    } else if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', handleOrientation, true);
-    }
-  }, [handleOrientation]);
-
-  // Check iOS permission requirement on mount
-  useEffect(() => {
-    if (
-      typeof DeviceOrientationEvent !== 'undefined' &&
-      typeof DeviceOrientationEvent.requestPermission === 'function'
-    ) {
-      setNeedsPermission(true);
-    } else if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', handleOrientation, true);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-        window.removeEventListener('deviceorientation', handleOrientation, true);
-      }
-    };
-  }, [handleOrientation]);
 
   // Per-element parallax drift calculation
   const drift = (dx, dy, rotate = 0) => ({
     transform: `translate(${mouse.x * dx}px, ${mouse.y * dy}px) rotate(${mouse.x * rotate}deg)`,
-    transition: 'transform 0.15s ease-out',
+    transition: 'transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
   });
 
   return (
@@ -200,11 +122,7 @@ export default function LandingPage({ onBrowseTemplates }) {
       }}
     >
       {/* ── MOBILE VIEWPORT LAYOUT (< 640px) matching reference screenshot ── */}
-      <div
-        className="block sm:hidden w-full h-full relative select-none"
-        onTouchStart={enableGyro}
-        onClick={enableGyro}
-      >
+      <div className="block sm:hidden w-full h-full relative select-none">
         {/* 1. ?????? text (Top Left) */}
         <Draggable id="m-question" driftStyle={drift(24, 16, -4)} style={{ position: 'absolute', left: '7%', top: '6%' }}>
           <span style={{ color: '#1d19ea', fontSize: '32px', fontWeight: 400, lineHeight: 1 }}>
