@@ -1,5 +1,29 @@
 import React, { useState, useRef } from 'react';
 
+function PixelInstagramIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+      <path d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h16V4H4zm8 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5-3.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+    </svg>
+  );
+}
+
+function PixelCoffeeIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+      <path d="M2 19h18v2H2v-2zM4 3h12v10a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V3zm2 2v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5H6zm10 2h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3V7zm2 2v2h1V9h-1z" />
+    </svg>
+  );
+}
+
+function PixelPlusIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+      <path d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7V4z" />
+    </svg>
+  );
+}
+
 export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
   const [isCatAnimating, setIsCatAnimating] = useState(false);
   const audioRef = useRef(null);
@@ -103,26 +127,26 @@ export default function ThankYouPage({ onBackToTemplates, onMakeAnother }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 w-full max-w-xs sm:max-w-none px-4">
           <button
             onClick={onMakeAnother}
-            className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[160px] sm:min-w-[170px]"
+            className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
-            make another
+            <PixelPlusIcon /> make another
           </button>
 
           <button
             onClick={() => window.open('https://buymeacoffee.com', '_blank')}
-            className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[160px] sm:min-w-[170px]"
+            className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
-            buy me a coffee
+            <PixelCoffeeIcon /> buy me a coffee
           </button>
 
           <button
             onClick={() => window.open('https://instagram.com/shuisbored', '_blank')}
-            className="btn-wireframe w-full sm:w-auto px-6 sm:px-12 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer min-w-[160px] sm:min-w-[170px]"
+            className="btn-wireframe w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold tracking-tight shadow-md cursor-pointer inline-flex items-center justify-center gap-2 min-w-[160px] sm:min-w-[170px]"
             style={{ fontFamily: "'Arial Narrow', 'Arial', sans-serif" }}
           >
-            follow me
+            <PixelInstagramIcon /> follow me
           </button>
         </div>
       </div>

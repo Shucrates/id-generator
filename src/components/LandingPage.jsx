@@ -17,6 +17,22 @@ const SHADOW_PRESSED = 'inset -1px -1px 0px #ffffff, inset -2px -2px 0px #e0e0e0
 const BG_DEFAULT = 'linear-gradient(180deg, #dfdfdf 0%, #c0c0c0 100%)';
 const BG_PRESSED = 'linear-gradient(180deg, #b0b0b0 0%, #a0a0a0 100%)';
 
+function PixelCoffeeIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+      <path d="M2 19h18v2H2v-2zM4 3h12v10a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V3zm2 2v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5H6zm10 2h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3V7zm2 2v2h1V9h-1z" />
+    </svg>
+  );
+}
+
+function PixelFolderIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-black">
+      <path d="M2 4h8l2 2h10v14H2V4zm2 4v10h16V8H4z" />
+    </svg>
+  );
+}
+
 /* ── Draggable wrapper for decorative elements ── */
 function Draggable({ children, style, driftStyle, id }) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -75,7 +91,35 @@ function Draggable({ children, style, driftStyle, id }) {
 
 export default function LandingPage({ onBrowseTemplates }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [needsPermission, setNeedsPermission] = useState(false);
   const containerRef = useRef(null);
+  const targetMouse = useRef({ x: 0, y: 0 });
+  const currentMouse = useRef({ x: 0, y: 0 });
+  const animFrameId = useRef(null);
+
+  // 60fps LERP interpolation loop for smooth motion physics
+  useEffect(() => {
+    let active = true;
+    const loop = () => {
+      if (!active) return;
+      // Smooth linear interpolation (lerp factor: 0.1)
+      currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.1;
+      currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.1;
+
+      setMouse({
+        x: currentMouse.current.x,
+        y: currentMouse.current.y,
+      });
+
+      animFrameId.current = requestAnimationFrame(loop);
+    };
+    loop();
+
+    return () => {
+      active = false;
+      if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+    };
+  }, []);
 
   // Mouse movement parallax for desktop
   const handleMouseMove = useCallback((e) => {
@@ -83,22 +127,49 @@ export default function LandingPage({ onBrowseTemplates }) {
     if (!rect) return;
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    setMouse({ x, y });
+    targetMouse.current = { x, y };
   }, []);
 
-  // Gyroscope motion parallax for mobile devices
-  useEffect(() => {
-    const handleOrientation = (e) => {
-      if (e.gamma !== null && e.beta !== null) {
-        // gamma: left-to-right tilt in degrees [-90, 90]
-        // beta: front-to-back tilt in degrees [-180, 180]
-        const x = Math.min(Math.max(e.gamma / 25, -1.2), 1.2);
-        const y = Math.min(Math.max((e.beta - 40) / 25, -1.2), 1.2);
-        setMouse({ x, y });
-      }
-    };
+  // Device orientation event handler
+  const handleOrientation = useCallback((e) => {
+    const gamma = e.gamma || 0; // [-90, 90] left-right tilt
+    const beta = e.beta || 0;   // [-180, 180] front-back tilt
 
-    if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+    // Calculate normalized tilt offsets centered around natural device holding angle (~45 deg pitch)
+    const normX = Math.min(Math.max(gamma / 18, -2.0), 2.0);
+    const normY = Math.min(Math.max((beta - 40) / 18, -2.0), 2.0);
+
+    targetMouse.current = { x: normX, y: normY };
+  }, []);
+
+  // Request Gyro permission (iOS 13+) or attach listener directly
+  const enableGyro = useCallback(async () => {
+    if (
+      typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      try {
+        const state = await DeviceOrientationEvent.requestPermission();
+        if (state === 'granted') {
+          setNeedsPermission(false);
+          window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+      } catch (err) {
+        console.log('Gyro permission error:', err);
+      }
+    } else if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+  }, [handleOrientation]);
+
+  // Check iOS permission requirement on mount
+  useEffect(() => {
+    if (
+      typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      setNeedsPermission(true);
+    } else if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
       window.addEventListener('deviceorientation', handleOrientation, true);
     }
 
@@ -107,12 +178,12 @@ export default function LandingPage({ onBrowseTemplates }) {
         window.removeEventListener('deviceorientation', handleOrientation, true);
       }
     };
-  }, []);
+  }, [handleOrientation]);
 
   // Per-element parallax drift calculation
   const drift = (dx, dy, rotate = 0) => ({
     transform: `translate(${mouse.x * dx}px, ${mouse.y * dy}px) rotate(${mouse.x * rotate}deg)`,
-    transition: 'transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    transition: 'transform 0.15s ease-out',
   });
 
   return (
@@ -129,21 +200,25 @@ export default function LandingPage({ onBrowseTemplates }) {
       }}
     >
       {/* ── MOBILE VIEWPORT LAYOUT (< 640px) matching reference screenshot ── */}
-      <div className="block sm:hidden w-full h-full relative select-none">
+      <div
+        className="block sm:hidden w-full h-full relative select-none"
+        onTouchStart={enableGyro}
+        onClick={enableGyro}
+      >
         {/* 1. ?????? text (Top Left) */}
-        <Draggable id="m-question" driftStyle={drift(12, 8, -2)} style={{ position: 'absolute', left: '7%', top: '6%' }}>
+        <Draggable id="m-question" driftStyle={drift(24, 16, -4)} style={{ position: 'absolute', left: '7%', top: '6%' }}>
           <span style={{ color: '#1d19ea', fontSize: '32px', fontWeight: 400, lineHeight: 1 }}>
             ??????
           </span>
         </Draggable>
 
         {/* 2. CD Disc (Top Right) */}
-        <Draggable id="m-disc" driftStyle={drift(-14, -8, 4)} style={{ position: 'absolute', right: '6%', top: '5%' }}>
+        <Draggable id="m-disc" driftStyle={drift(-28, -18, 6)} style={{ position: 'absolute', right: '6%', top: '5%' }}>
           <img src={assets.disc} alt="" draggable={false} style={{ width: '75px', height: 'auto', objectFit: 'contain' }} />
         </Draggable>
 
         {/* 3. Warning Icon (Upper Center) */}
-        <Draggable id="m-warning" driftStyle={drift(10, 15, 3)} style={{ position: 'absolute', left: '26%', top: '19%' }}>
+        <Draggable id="m-warning" driftStyle={drift(20, 30, 5)} style={{ position: 'absolute', left: '26%', top: '19%' }}>
           <img src={assets.warning} alt="" draggable={false} style={{ width: '64px', height: 'auto', objectFit: 'contain' }} />
         </Draggable>
 
@@ -153,14 +228,14 @@ export default function LandingPage({ onBrowseTemplates }) {
             position: 'absolute',
             top: '38%',
             left: '50%',
-            transform: `translateX(-50%) translate(${mouse.x * 4}px, ${mouse.y * 3}px)`,
+            transform: `translateX(-50%) translate(${mouse.x * 6}px, ${mouse.y * 5}px)`,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
             width: '92%',
             zIndex: 20,
-            transition: 'transform 0.45s ease',
+            transition: 'transform 0.15s ease-out',
           }}
         >
           <h1
@@ -202,12 +277,12 @@ export default function LandingPage({ onBrowseTemplates }) {
         </div>
 
         {/* 5. Pixel Glasses (Right edge of Subtitle) */}
-        <Draggable id="m-glasses" driftStyle={drift(-15, -6, -3)} style={{ position: 'absolute', right: '3%', top: '48%' }}>
+        <Draggable id="m-glasses" driftStyle={drift(-30, -14, -5)} style={{ position: 'absolute', right: '3%', top: '48%' }}>
           <img src={assets.object} alt="" draggable={false} style={{ width: '48px', height: 'auto', objectFit: 'contain' }} />
         </Draggable>
 
         {/* 6. Sparkle / Star (Middle Left) */}
-        <Draggable id="m-star" driftStyle={drift(15, 12, 2)} style={{ position: 'absolute', left: '4%', top: '56%' }}>
+        <Draggable id="m-star" driftStyle={drift(28, 24, 4)} style={{ position: 'absolute', left: '4%', top: '56%' }}>
           <img src={assets.star} alt="" draggable={false} style={{ width: '68px', height: 'auto', objectFit: 'contain' }} />
         </Draggable>
 
@@ -240,6 +315,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: '8px',
               fontFamily: "'Arial Narrow', 'Arial', sans-serif",
               boxShadow: SHADOW_DEFAULT,
               userSelect: 'none',
@@ -253,7 +329,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               e.currentTarget.style.background = BG_DEFAULT;
             }}
           >
-            browse templates
+            <PixelFolderIcon /> browse templates
           </button>
 
           <a
@@ -272,6 +348,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: '8px',
               fontFamily: "'Arial Narrow', 'Arial', sans-serif",
               textDecoration: 'none',
               boxShadow: SHADOW_DEFAULT,
@@ -286,7 +363,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               e.currentTarget.style.background = BG_DEFAULT;
             }}
           >
-            buy me a coffee
+            <PixelCoffeeIcon /> buy me a coffee
           </a>
         </div>
 
@@ -479,6 +556,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: '8px',
               fontFamily: "'Arial Narrow', 'Arial', sans-serif",
               boxShadow: SHADOW_DEFAULT,
               transition: 'box-shadow 0.1s ease, transform 0.05s ease, background 0.05s ease',
@@ -504,7 +582,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               e.currentTarget.style.transform = 'translateX(-50%)';
             }}
           >
-            browse templates
+            <PixelFolderIcon /> browse templates
           </button>
 
           {/* 8. Buy Me a Coffee (not draggable) */}
@@ -529,6 +607,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: '8px',
               fontFamily: "'Arial Narrow', 'Arial', sans-serif",
               textDecoration: 'none',
               boxShadow: SHADOW_DEFAULT,
@@ -555,7 +634,7 @@ export default function LandingPage({ onBrowseTemplates }) {
               e.currentTarget.style.transform = 'translateX(-50%)';
             }}
           >
-            buy me a coffee
+            <PixelCoffeeIcon /> buy me a coffee
           </a>
 
           {/* 9. Warning Icon */}
