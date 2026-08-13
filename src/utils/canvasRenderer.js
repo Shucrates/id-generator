@@ -51,7 +51,7 @@ export async function renderCardCanvas({
   let bgUrl = '';
   if (template.id === 'loki-tva-id') {
     if (side === 'front') {
-      bgUrl = !isCustomMode ? '/tva-loki-default-front.png' : '/tva-loki-custom-front.png';
+      bgUrl = !isCustomMode ? '/tva-loki-default-front.png?v=2' : '/tva-loki-custom-front.png';
     } else {
       bgUrl = '/tva-loki-back.png';
     }

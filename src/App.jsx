@@ -74,22 +74,22 @@ export default function App() {
 
   /* ── Pre-cache template images for instant rendering ── */
   useEffect(() => {
-    const urls = [
-      '/richard-parker-default-front.png',
-      '/richard-parker-default-front-notch.png',
-      '/oscorp-custom-front-clean.png',
-      '/oscorp-custom-front-clean-notch.png',
-      '/oscorp-back-symbol.png',
-      '/oscorp-back-symbol-notch.png',
-      '/oscorp-custom-back.png',
-      '/richard-parker-default-back.png',
-      '/oscorp-back-qr-notch.png',
-      '/tva-loki-card-stacked.png',
-      '/tva-loki-default-front.png',
-      '/tva-loki-back.png',
-      '/tva-loki-custom-front.png'
+    const preloadedImages = [
+      '/richard-parker-default-front.png?v=2',
+      '/richard-parker-default-front-notch.png?v=2',
+      '/oscorp-custom-front-clean.png?v=2',
+      '/oscorp-custom-front-clean-notch.png?v=2',
+      '/oscorp-back-symbol.png?v=2',
+      '/oscorp-back-symbol-notch.png?v=2',
+      '/oscorp-custom-back.png?v=2',
+      '/richard-parker-default-back.png?v=2',
+      '/oscorp-back-qr-notch.png?v=2',
+      '/tva-loki-card-stacked.png?v=2',
+      '/tva-loki-default-front.png?v=2',
+      '/tva-loki-back.png?v=2',
+      '/tva-loki-custom-front.png?v=2'
     ];
-    urls.forEach((url) => {
+    preloadedImages.forEach((url) => {
       const img = new Image();
       img.src = url;
     });

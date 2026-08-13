@@ -101,7 +101,7 @@ export default function DualCardView({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let activeSrc = croppedPhotoUrl || (template.id === 'loki-tva-id' ? '/tva-loki-default-front.png' : null);
+    let activeSrc = croppedPhotoUrl || (template.id === 'loki-tva-id' ? '/tva-loki-default-front.png?v=2' : null);
     if (!activeSrc) return;
 
     let isSubscribed = true;

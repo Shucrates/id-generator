@@ -240,7 +240,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                 title="Click card to edit"
               >
                 <img
-                  src="/tva-loki-card-stacked.png"
+                  src="/tva-loki-card-stacked.png?v=2"
                   alt="Loki TVA ID Card Stack"
                   style={{
                     width: 'clamp(240px, 50vw, 310px)',
