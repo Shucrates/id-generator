@@ -2,6 +2,28 @@ import { loadImage, drawRoundedRect } from './imageUtils';
 import { drawQRCode } from './idGenerator';
 import { ensureFontsLoaded } from './fontLoader';
 
+// Helper for generating lightweight 3-5% film grain pattern
+let grainPatternCanvas = null;
+function getFilmGrainPattern(ctx) {
+  if (!grainPatternCanvas) {
+    grainPatternCanvas = document.createElement('canvas');
+    grainPatternCanvas.width = 128;
+    grainPatternCanvas.height = 128;
+    const gCtx = grainPatternCanvas.getContext('2d');
+    const imgData = gCtx.createImageData(128, 128);
+    const data = imgData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const val = Math.floor(Math.random() * 255);
+      data[i] = val;
+      data[i + 1] = val;
+      data[i + 2] = val;
+      data[i + 3] = Math.floor(Math.random() * 12 + 6); // ~3-5% grain alpha
+    }
+    gCtx.putImageData(imgData, 0, 0);
+  }
+  return ctx.createPattern(grainPatternCanvas, 'repeat');
+}
+
 /**
  * HTML5 Canvas renderer utilizing provided default & custom template images
  * Configured for maximum print-quality resolution & crisp vector subpixel text smoothing
@@ -108,9 +130,13 @@ export async function renderCardCanvas({
 
             if (applyTvaFilter && intensityFactor > 0) {
               try {
-                const grayPercent = Math.round(intensityFactor * 90);
-                const blurPx = (intensityFactor * 1.5 * scale).toFixed(1);
-                ctx.filter = `grayscale(${grayPercent}%) sepia(${intensityFactor * 0.8}) contrast(0.88) brightness(1.02) blur(${blurPx}px)`;
+                // Cinematic base: Slight sepia (18%), reduced saturation (85%), gentle contrast (+10%), slightly lowered brightness (95%)
+                const sepiaVal = (0.18 * intensityFactor).toFixed(2);
+                const satVal = (1 - 0.15 * intensityFactor).toFixed(2);
+                const contrastVal = (1 + 0.10 * intensityFactor).toFixed(2);
+                const brightVal = (1 - 0.05 * intensityFactor).toFixed(2);
+
+                ctx.filter = `sepia(${sepiaVal}) saturate(${satVal}) contrast(${contrastVal}) brightness(${brightVal})`;
               } catch (e) {}
             }
 
@@ -132,45 +158,55 @@ export async function renderCardCanvas({
             if (applyTvaFilter && intensityFactor > 0) {
               ctx.filter = 'none';
 
-              // Pass 1: Soft Analog Film Bloom Overlay (Diffuses sharp edges into soft film glow)
+              // Pass 1: Warm Amber Color Temperature (+22, #d69642) - Preserves Skin Tones
+              ctx.globalAlpha = 0.22 * intensityFactor;
+              ctx.globalCompositeOperation = 'color';
+              ctx.fillStyle = '#d69642';
+              ctx.fillRect(photoX, photoY, photoW, photoH);
+
+              // Pass 2: Lifted Blacks (Faded Film Look)
+              ctx.globalAlpha = 0.12 * intensityFactor;
+              ctx.globalCompositeOperation = 'lighten';
+              ctx.fillStyle = '#26201b';
+              ctx.fillRect(photoX, photoY, photoW, photoH);
+
+              // Pass 3: Soft Highlight Bloom
               ctx.save();
-              ctx.globalAlpha = intensityFactor * 0.28;
+              ctx.globalAlpha = 0.22 * intensityFactor;
               try {
-                const bloomBlur = Math.round(10 * intensityFactor * scale);
-                ctx.filter = `blur(${bloomBlur}px) brightness(1.08) sepia(0.6)`;
+                const bloomBlur = Math.round(8 * intensityFactor * scale);
+                ctx.filter = `blur(${bloomBlur}px) brightness(1.12) sepia(0.3)`;
               } catch (e) {}
               ctx.globalCompositeOperation = 'screen';
               ctx.drawImage(photoImg, sx, sy, sw, sh, photoX, photoY, photoW, photoH);
               ctx.restore();
 
-              // Pass 2: Warm Vintage TVA Golden Orange-Yellowish Amber Tint (#ba8945)
-              ctx.globalAlpha = intensityFactor * 0.72;
-              ctx.globalCompositeOperation = 'color';
-              ctx.fillStyle = '#ba8945';
-              ctx.fillRect(photoX, photoY, photoW, photoH);
-
-              // Pass 3: Soft Muted Sepia Shadow Multiply Blend
-              ctx.globalCompositeOperation = 'multiply';
-              ctx.fillStyle = 'rgba(55, 42, 32, 0.28)';
-              ctx.fillRect(photoX, photoY, photoW, photoH);
-
-              // Pass 4: Dark Radial Vintage Lens Vignette (Darkens edges & corners)
+              // Pass 4: Subtle Dark Vignette (25-30% around edges)
               ctx.globalAlpha = 1.0;
               const centerX = photoX + photoW / 2;
               const centerY = photoY + photoH / 2;
-              const maxRadius = Math.max(photoW, photoH) * 0.72;
+              const maxRadius = Math.max(photoW, photoH) * 0.75;
 
               const vignetteGrad = ctx.createRadialGradient(
-                centerX, centerY, maxRadius * 0.25,
+                centerX, centerY, maxRadius * 0.35,
                 centerX, centerY, maxRadius
               );
               vignetteGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-              vignetteGrad.addColorStop(0.55, `rgba(20, 15, 10, ${0.30 * intensityFactor})`);
-              vignetteGrad.addColorStop(1, `rgba(10, 5, 0, ${0.72 * intensityFactor})`);
+              vignetteGrad.addColorStop(0.65, `rgba(15, 10, 5, ${0.15 * intensityFactor})`);
+              vignetteGrad.addColorStop(1, `rgba(10, 5, 0, ${0.28 * intensityFactor})`);
 
               ctx.globalCompositeOperation = 'multiply';
               ctx.fillStyle = vignetteGrad;
               ctx.fillRect(photoX, photoY, photoW, photoH);
+
+              // Pass 5: Very Light Film Grain (3-5%)
+              const grainPattern = getFilmGrainPattern(ctx);
+              if (grainPattern) {
+                ctx.globalAlpha = 0.5 * intensityFactor;
+                ctx.globalCompositeOperation = 'overlay';
+                ctx.fillStyle = grainPattern;
+                ctx.fillRect(photoX, photoY, photoW, photoH);
+              }
 
               // Reset alpha and composite blend mode
               ctx.globalAlpha = 1.0;

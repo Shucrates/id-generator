@@ -123,9 +123,12 @@ export default function DualCardView({
 
       if (intensityFactor > 0) {
         try {
-          const grayPercent = Math.round(intensityFactor * 90);
-          const blurPx = (intensityFactor * 0.2).toFixed(1);
-          ctx.filter = `grayscale(${grayPercent}%) sepia(${intensityFactor * 0.8}) contrast(0.88) brightness(1.02) blur(${blurPx}px)`;
+          const sepiaVal = (0.18 * intensityFactor).toFixed(2);
+          const satVal = (1 - 0.15 * intensityFactor).toFixed(2);
+          const contrastVal = (1 + 0.10 * intensityFactor).toFixed(2);
+          const brightVal = (1 - 0.05 * intensityFactor).toFixed(2);
+
+          ctx.filter = `sepia(${sepiaVal}) saturate(${satVal}) contrast(${contrastVal}) brightness(${brightVal})`;
         } catch (e) {}
       }
 
@@ -147,41 +150,42 @@ export default function DualCardView({
       if (intensityFactor > 0) {
         ctx.filter = 'none';
 
-        // Pass 1: Soft Analog Film Bloom Overlay (Diffuses sharp edges into soft film glow)
+        // Pass 1: Warm Amber Color Temperature (+22, #d69642) - Preserves Skin Tones
+        ctx.globalAlpha = 0.22 * intensityFactor;
+        ctx.globalCompositeOperation = 'color';
+        ctx.fillStyle = '#d69642';
+        ctx.fillRect(0, 0, pw, ph);
+
+        // Pass 2: Lifted Blacks (Faded Film Look)
+        ctx.globalAlpha = 0.12 * intensityFactor;
+        ctx.globalCompositeOperation = 'lighten';
+        ctx.fillStyle = '#26201b';
+        ctx.fillRect(0, 0, pw, ph);
+
+        // Pass 3: Soft Highlight Bloom
         ctx.save();
-        ctx.globalAlpha = intensityFactor * 0.28;
+        ctx.globalAlpha = 0.22 * intensityFactor;
         try {
           const bloomBlur = Math.max(1, Math.round(1.2 * intensityFactor));
-          ctx.filter = `blur(${bloomBlur}px) brightness(1.08) sepia(0.6)`;
+          ctx.filter = `blur(${bloomBlur}px) brightness(1.12) sepia(0.3)`;
         } catch (e) {}
         ctx.globalCompositeOperation = 'screen';
         ctx.drawImage(img, sx, sy, sw, sh, 0, 0, pw, ph);
         ctx.restore();
 
-        // Pass 2: Warm Vintage TVA Golden Orange-Yellowish Amber Tint (#ba8945)
-        ctx.globalAlpha = intensityFactor * 0.72;
-        ctx.globalCompositeOperation = 'color';
-        ctx.fillStyle = '#ba8945';
-        ctx.fillRect(0, 0, pw, ph);
-
-        // Pass 3: Soft Muted Sepia Shadow Multiply Blend
-        ctx.globalCompositeOperation = 'multiply';
-        ctx.fillStyle = 'rgba(55, 42, 32, 0.28)';
-        ctx.fillRect(0, 0, pw, ph);
-
-        // Pass 4: Dark Radial Vintage Lens Vignette (Darkens edges & corners)
+        // Pass 4: Subtle Dark Vignette (25-30% around edges)
         ctx.globalAlpha = 1.0;
         const centerX = pw / 2;
         const centerY = ph / 2;
-        const maxRadius = Math.max(pw, ph) * 0.72;
+        const maxRadius = Math.max(pw, ph) * 0.75;
 
         const vignetteGrad = ctx.createRadialGradient(
-          centerX, centerY, maxRadius * 0.25,
+          centerX, centerY, maxRadius * 0.35,
           centerX, centerY, maxRadius
         );
         vignetteGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        vignetteGrad.addColorStop(0.55, `rgba(20, 15, 10, ${0.30 * intensityFactor})`);
-        vignetteGrad.addColorStop(1, `rgba(10, 5, 0, ${0.72 * intensityFactor})`);
+        vignetteGrad.addColorStop(0.65, `rgba(15, 10, 5, ${0.15 * intensityFactor})`);
+        vignetteGrad.addColorStop(1, `rgba(10, 5, 0, ${0.28 * intensityFactor})`);
 
         ctx.globalCompositeOperation = 'multiply';
         ctx.fillStyle = vignetteGrad;
