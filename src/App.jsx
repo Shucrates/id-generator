@@ -10,39 +10,67 @@ import { TEMPLATES } from './config/templates';
 import { playRetroClickSound } from './utils/soundUtils';
 import { ArrowLeft } from 'lucide-react';
 
-/* ── Map URL hash → screen name ── */
-function screenFromHash() {
+/* ── Map URL hash → screen & templateId ── */
+function parseHash() {
   const hash = window.location.hash.replace('#', '');
-  if (hash === 'templates') return 'templates';
-  if (hash === 'editor') return 'editor';
-  if (hash === 'thankyou') return 'thankyou';
-  return 'landing';
+  if (!hash) return { screen: 'landing', templateId: 'oscorp-staff' };
+  if (hash === 'templates') return { screen: 'templates', templateId: 'oscorp-staff' };
+  if (hash === 'thankyou') return { screen: 'thankyou', templateId: localStorage.getItem('selectedTemplateId') || 'oscorp-staff' };
+
+  if (hash.startsWith('editor')) {
+    let templateId = 'oscorp-staff';
+    if (hash.includes('/')) {
+      templateId = hash.split('/')[1];
+    } else if (hash.includes('template=')) {
+      templateId = hash.split('template=')[1].split('&')[0];
+    } else {
+      templateId = localStorage.getItem('selectedTemplateId') || 'oscorp-staff';
+    }
+    const valid = TEMPLATES.some((t) => t.id === templateId);
+    return { screen: 'editor', templateId: valid ? templateId : 'oscorp-staff' };
+  }
+
+  return { screen: 'landing', templateId: 'oscorp-staff' };
 }
 
 export default function App() {
-  const activeTemplate = TEMPLATES[0];
+  const initialRoute = parseHash();
+  const [selectedTemplateId, setSelectedTemplateId] = useState(initialRoute.templateId);
+  const [currentScreen, setCurrentScreen] = useState(initialRoute.screen);
 
-  // Initialise from current URL hash so refreshes stay on the right page
-  const [currentScreen, setCurrentScreen] = useState(screenFromHash);
+  const activeTemplate = TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
 
-  const [userData, setUserData] = useState(activeTemplate.defaultValues);
+  const [userData, setUserData] = useState(() => activeTemplate.defaultValues);
   const [croppedPhotoUrl, setCroppedPhotoUrl] = useState(null);
   const [isCustomMode, setIsCustomMode] = useState(false);
 
-  // New Editor Toggles: Back Panel Version & Cutting Guides
+  // New Editor Toggles: Back Panel Version, Cutting Guides & TVA Photo Filter
   const [backVersion, setBackVersion] = useState('oscorp-symbol'); // 'oscorp-symbol' | 'custom-qr'
   const [showCuttingGuides, setShowCuttingGuides] = useState(false);
+  const [applyTvaFilter, setApplyTvaFilter] = useState(true);
+  const [tvaFilterIntensity, setTvaFilterIntensity] = useState(45); // 0 to 100%
 
   // Photo crop modal state
   const [rawPhotoSrc, setRawPhotoSrc] = useState(null);
   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
 
   /* ── Navigate with history ── */
-  const navigateTo = useCallback((screen) => {
+  const navigateTo = useCallback((screen, templateId = selectedTemplateId) => {
     setCurrentScreen(screen);
-    const hash = screen === 'landing' ? '' : `#${screen}`;
-    window.history.pushState({ screen }, '', `/${hash}`);
-  }, []);
+    setSelectedTemplateId(templateId);
+    localStorage.setItem('selectedTemplateId', templateId);
+
+    let hash = '';
+    if (screen === 'editor') {
+      hash = `#editor/${templateId}`;
+    } else if (screen === 'templates') {
+      hash = '#templates';
+    } else if (screen === 'thankyou') {
+      hash = '#thankyou';
+    }
+
+    window.history.pushState({ screen, templateId }, '', `/${hash}`);
+  }, [selectedTemplateId]);
 
   /* ── Pre-cache template images for instant rendering ── */
   useEffect(() => {
@@ -55,7 +83,11 @@ export default function App() {
       '/oscorp-back-symbol-notch.png',
       '/oscorp-custom-back.png',
       '/richard-parker-default-back.png',
-      '/oscorp-back-qr-notch.png'
+      '/oscorp-back-qr-notch.png',
+      '/tva-loki-card-stacked.png',
+      '/tva-loki-default-front.png',
+      '/tva-loki-back.png',
+      '/tva-loki-custom-front.png'
     ];
     urls.forEach((url) => {
       const img = new Image();
@@ -66,19 +98,27 @@ export default function App() {
   /* ── Listen for browser back / forward ── */
   useEffect(() => {
     const onPopState = () => {
-      setCurrentScreen(screenFromHash());
+      const route = parseHash();
+      setCurrentScreen(route.screen);
+      if (route.templateId && route.templateId !== selectedTemplateId) {
+        setSelectedTemplateId(route.templateId);
+        const t = TEMPLATES.find((item) => item.id === route.templateId) || TEMPLATES[0];
+        setUserData(t.defaultValues);
+        setCroppedPhotoUrl(null);
+        setIsCustomMode(false);
+      }
     };
     window.addEventListener('popstate', onPopState);
 
     // Set initial history state if none exists
     if (!window.history.state?.screen) {
-      const initial = screenFromHash();
-      const hash = initial === 'landing' ? '' : `#${initial}`;
-      window.history.replaceState({ screen: initial }, '', `/${hash}`);
+      const route = parseHash();
+      const hash = route.screen === 'landing' ? '' : (route.screen === 'editor' ? `#editor/${route.templateId}` : `#${route.screen}`);
+      window.history.replaceState({ screen: route.screen, templateId: route.templateId }, '', `/${hash}`);
     }
 
     return () => window.removeEventListener('popstate', onPopState);
-  }, []);
+  }, [selectedTemplateId]);
 
   const handleOpenCropModal = (photoDataUrl) => {
     setRawPhotoSrc(photoDataUrl);
@@ -94,10 +134,20 @@ export default function App() {
     navigateTo('templates');
   };
 
+  const handleSelectTemplate = (templateId) => {
+    setSelectedTemplateId(templateId);
+    const t = TEMPLATES.find((item) => item.id === templateId) || TEMPLATES[0];
+    setUserData(t.defaultValues);
+    setCroppedPhotoUrl(null);
+    setIsCustomMode(false);
+    localStorage.setItem('selectedTemplateId', templateId);
+    navigateTo('editor', templateId);
+  };
+
   const handleCreateYourOwn = () => {
     setUserData((prev) => ({
       ...prev,
-      name: ''
+      name: activeTemplate.id === 'loki-tva-id' ? 'Loki' : ''
     }));
     setIsCustomMode(true);
   };
@@ -111,9 +161,8 @@ export default function App() {
   if (currentScreen === 'templates') {
     return (
       <TemplatePicker
-        onSelectTemplate={() => {
-          setIsCustomMode(false);
-          navigateTo('editor');
+        onSelectTemplate={(templateId) => {
+          handleSelectTemplate(templateId);
         }}
         onBack={() => navigateTo('landing')}
       />
@@ -143,7 +192,7 @@ export default function App() {
         >
           <span style={{ fontSize: '1.2em', lineHeight: 1 }}>←</span> templates
         </button>
-        <Header isCustomMode={isCustomMode} />
+        <Header template={activeTemplate} isCustomMode={isCustomMode} />
       </div>
 
       {/* Main Dual-Card Display & Controls */}
@@ -159,6 +208,10 @@ export default function App() {
           setBackVersion={setBackVersion}
           showCuttingGuides={showCuttingGuides}
           setShowCuttingGuides={setShowCuttingGuides}
+          applyTvaFilter={applyTvaFilter}
+          setApplyTvaFilter={setApplyTvaFilter}
+          tvaFilterIntensity={tvaFilterIntensity}
+          setTvaFilterIntensity={setTvaFilterIntensity}
         />
 
         {/* Wireframe Bottom Action Buttons */}
@@ -171,6 +224,8 @@ export default function App() {
           onCustomModeTrigger={handleCreateYourOwn}
           backVersion={backVersion}
           showCuttingGuides={showCuttingGuides}
+          applyTvaFilter={applyTvaFilter}
+          tvaFilterIntensity={tvaFilterIntensity}
           onDownloadComplete={() => navigateTo('thankyou')}
         />
       </main>
@@ -179,7 +234,7 @@ export default function App() {
       <ImageCropModal
         isOpen={isCropModalOpen}
         imageSrc={rawPhotoSrc}
-        aspectRatio={752 / 940} // Aspect ratio for the card photo area
+        aspectRatio={activeTemplate.id === 'loki-tva-id' ? (260 / 338) : (752 / 940)}
         onClose={() => setIsCropModalOpen(false)}
         onCropComplete={handleCropComplete}
       />

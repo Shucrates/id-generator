@@ -23,19 +23,30 @@ export function loadImage(src) {
   });
 }
 
-// Draw path with rounded corners
+// Draw path with rounded corners (supports single radius or object/array for top/bottom radii)
 export function drawRoundedRect(ctx, x, y, width, height, radius) {
-  const r = typeof radius === 'number' ? radius : 8;
+  let tl = 8, tr = 8, br = 8, bl = 8;
+  if (typeof radius === 'number') {
+    tl = tr = br = bl = radius;
+  } else if (Array.isArray(radius)) {
+    [tl, tr, br, bl] = radius;
+  } else if (typeof radius === 'object' && radius !== null) {
+    tl = radius.topLeft ?? radius.top ?? 8;
+    tr = radius.topRight ?? radius.top ?? 8;
+    br = radius.bottomRight ?? radius.bottom ?? 8;
+    bl = radius.bottomLeft ?? radius.bottom ?? 8;
+  }
+
   ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + width - r, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
-  ctx.lineTo(x + width, y + height - r);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-  ctx.lineTo(x + r, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.moveTo(x + tl, y);
+  ctx.lineTo(x + width - tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + tr);
+  ctx.lineTo(x + width, y + height - br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - br, y + height);
+  ctx.lineTo(x + bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - bl);
+  ctx.lineTo(x, y + tl);
+  ctx.quadraticCurveTo(x, y, x + tl, y);
   ctx.closePath();
 }
 

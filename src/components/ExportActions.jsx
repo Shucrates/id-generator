@@ -37,6 +37,8 @@ export default function ExportActions({
   onCustomModeTrigger,
   backVersion = 'oscorp-symbol',
   showCuttingGuides = false,
+  applyTvaFilter = true,
+  tvaFilterIntensity = 45,
   onDownloadComplete
 }) {
   const [isExporting, setIsExporting] = useState(false);
@@ -60,7 +62,9 @@ export default function ExportActions({
       scale: 2, // Ultra HD High Resolution Export (3030 x 4800 pixels)
       isCustomMode,
       backVersion,
-      showCuttingGuides
+      showCuttingGuides,
+      applyTvaFilter,
+      tvaFilterIntensity
     });
 
     return new Promise((resolve) => {
@@ -73,7 +77,12 @@ export default function ExportActions({
     setIsExporting(true);
     try {
       const zip = new JSZip();
-      const prefix = isCustomMode ? 'custom_id' : 'oscorp_richard_parker_id';
+      let prefix = 'custom_id';
+      if (template.id === 'loki-tva-id') {
+        prefix = isCustomMode ? 'loki_tva_custom_id' : 'loki_tva_id';
+      } else {
+        prefix = isCustomMode ? 'custom_id' : 'oscorp_richard_parker_id';
+      }
 
       // Render front and back side blobs
       const frontBlob = await getRenderedCanvasBlob('front');
@@ -115,7 +124,7 @@ export default function ExportActions({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full pb-3 sm:pb-0">
+    <div className={`flex flex-col items-center justify-center w-full pb-3 sm:pb-0 ${template?.id === 'loki-tva-id' ? 'pt-3 sm:pt-4' : 'pt-2'}`}>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 w-full max-w-xl my-2 px-4">
         {!isCustomMode ? (
           // DEFAULT MODE BUTTONS

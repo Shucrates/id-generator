@@ -290,6 +290,45 @@ export default function LandingPage({ onBrowseTemplates }) {
           </a>
         </div>
 
+        {/* Donate arrow */}
+        <div
+          style={{
+            position: 'absolute',
+            right: '20px',
+            top: 'calc(61% + 90px)',
+            pointerEvents: 'none',
+            zIndex: 25,
+          }}
+        >
+          <svg width="50" height="32" viewBox="0 0 110 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 55 C 85 20 45 8 12 15" stroke="black" strokeWidth="4" strokeLinecap="round" fill="none" />
+            <path d="M22 8 L10 15 L20 27" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </svg>
+        </div>
+
+        {/* Donate label */}
+        <div
+          style={{
+            position: 'absolute',
+            right: '2%',
+            top: 'calc(61% + 122px)',
+            pointerEvents: 'none',
+            zIndex: 25,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              fontSize: '15px',
+              fontWeight: 400,
+              color: '#000000',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            consider donating!
+          </span>
+        </div>
+
         {/* 8. Coffee Mug (Bottom Left) */}
         <Draggable id="m-mug" driftStyle={drift(14, 10, -2)} style={{ position: 'absolute', left: '10%', bottom: '11%' }}>
           <img src={assets.mug} alt="" draggable={false} style={{ width: '46px', height: 'auto', objectFit: 'contain' }} />
@@ -563,6 +602,44 @@ export default function LandingPage({ onBrowseTemplates }) {
           >
             <PixelCoffeeIcon /> buy me a coffee
           </a>
+
+          {/* Donate arrow + label */}
+          <div
+            style={{
+              position: 'absolute',
+              left: 'calc(50% + 115px)',
+              top: '71.5%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              pointerEvents: 'none',
+              zIndex: 25,
+            }}
+          >
+            <svg
+              width="clamp(60px, 8vw, 100px)"
+              height="clamp(38px, 5vw, 60px)"
+              viewBox="0 0 110 65"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ width: 'clamp(60px, 8vw, 100px)', height: 'clamp(38px, 5vw, 60px)' }}
+            >
+              <path d="M100 55 C 85 20 45 8 12 15" stroke="black" strokeWidth="4" strokeLinecap="round" fill="none" />
+              <path d="M22 8 L10 15 L20 27" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+            <span
+              style={{
+                marginLeft: '60px',
+                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                fontSize: 'clamp(13px, 1.3vw, 18px)',
+                fontWeight: 400,
+                color: '#000000',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              consider donating!
+            </span>
+          </div>
 
           {/* 9. Warning Icon */}
           <Draggable

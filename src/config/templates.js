@@ -8,6 +8,8 @@ export const TEMPLATES = [
     cardHeight: 2400,
     exportScale: 1, // Full native resolution
     hasBackSide: true,
+    hasCuttingGuides: true,
+    hasQrCode: true,
     lanyardSlot: { enabled: false },
     theme: {
       primary: "#000000",
@@ -162,6 +164,43 @@ export const TEMPLATES = [
         font: "600 11px 'Inter', sans-serif",
         color: "#000000",
         align: "center"
+      }
+    ]
+  },
+  {
+    id: "loki-tva-id",
+    name: "doomsday: loki tva id",
+    description: "Time Variance Authority official identification card for Loki.",
+    category: "Time Variance Authority",
+    cardWidth: 1515,
+    cardHeight: 2400,
+    exportScale: 1,
+    hasBackSide: true,
+    hasCuttingGuides: false,
+    hasQrCode: false,
+    lanyardSlot: { enabled: false },
+    theme: {
+      primary: "#e88024",
+      secondary: "#000000",
+      accent: "#e88024",
+      background: "#000000"
+    },
+    defaultValues: {
+      name: "Loki",
+      idNumber: "414-620701-401220"
+    },
+    customPlaceholders: {
+      photo: "Upload your image"
+    },
+    fields: [
+      {
+        id: "photo",
+        type: "photo",
+        x: 366,
+        y: 1097,
+        width: 783,
+        height: 1010,
+        clip: false
       }
     ]
   }

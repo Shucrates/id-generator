@@ -139,18 +139,17 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: '30px',
+            justifyContent: 'center',
+            gap: '50px clamp(60px, 10vw, 150px)',
           }}
         >
-          {/* Left Column: Stacked Card + Click to Edit Arrow + Label */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxWidth: '100%' }}>
-            <div className="flex flex-row items-center gap-2 sm:gap-7">
-              {/* Stacked Card Preview Button - ONLY this redirects to editor */}
+          {/* 1. Oscorp Staff ID Card */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%' }}>
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-6">
               <div
-                onClick={(e) => {
+                onClick={() => {
                   playRetroClickSound();
-                  if (onSelectTemplate) onSelectTemplate(e);
+                  if (onSelectTemplate) onSelectTemplate('oscorp-staff');
                 }}
                 style={{
                   cursor: 'pointer',
@@ -169,14 +168,14 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                   src="/oscorp-card-stacked.png"
                   alt="TASM Oscorp Staff ID Card Stack"
                   style={{
-                    width: 'clamp(160px, 22vw, 270px)',
+                    width: 'clamp(240px, 50vw, 310px)',
                     height: 'auto',
                     display: 'block',
                   }}
                 />
               </div>
 
-              {/* Click to Edit Arrow & Label - NON INTERACTIVE (No redirect) */}
+              {/* Arrow and click to edit text commented out for now:
               <div
                 style={{
                   display: 'flex',
@@ -192,7 +191,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                     fontSize: 'clamp(14px, 1.8vw, 24px)',
                     color: '#000',
                     marginTop: '2px',
-                    marginLeft: 'clamp(90px, 11vw, 180px)',
+                    marginLeft: 'clamp(70px, 9vw, 150px)',
                     whiteSpace: 'nowrap',
                     fontFamily: "'Arial Narrow', 'Arial', sans-serif",
                   }}
@@ -200,13 +199,15 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                   click to edit!
                 </span>
               </div>
+              */}
             </div>
 
-            {/* Template Title Label */}
             <h3
               style={{
-                margin: '20px 0 0 10px',
-                fontSize: 'clamp(20px, 2.2vw, 28px)',
+                margin: '18px auto 0 auto',
+                textAlign: 'center',
+                width: '100%',
+                fontSize: 'clamp(22px, 2.5vw, 30px)',
                 fontWeight: 400,
                 color: '#1d19ea',
                 letterSpacing: '-0.02em',
@@ -214,6 +215,81 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
               }}
             >
               tasm: oscorp staff id
+            </h3>
+          </div>
+
+          {/* 2. Loki TVA ID Card */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%' }}>
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-6">
+              <div
+                onClick={() => {
+                  playRetroClickSound();
+                  if (onSelectTemplate) onSelectTemplate('loki-tva-id');
+                }}
+                style={{
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease',
+                  userSelect: 'none',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.03)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+                title="Click card to edit"
+              >
+                <img
+                  src="/tva-loki-card-stacked.png"
+                  alt="Loki TVA ID Card Stack"
+                  style={{
+                    width: 'clamp(240px, 50vw, 310px)',
+                    height: 'auto',
+                    display: 'block',
+                  }}
+                />
+              </div>
+
+              {/* Arrow and click to edit text commented out for now:
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                }}
+              >
+                <CurvedArrow />
+                <span
+                  style={{
+                    fontSize: 'clamp(14px, 1.8vw, 24px)',
+                    color: '#000',
+                    marginTop: '2px',
+                    marginLeft: 'clamp(70px, 9vw, 150px)',
+                    whiteSpace: 'nowrap',
+                    fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                  }}
+                >
+                  click to edit!
+                </span>
+              </div>
+              */}
+            </div>
+
+            <h3
+              style={{
+                margin: '18px auto 0 auto',
+                textAlign: 'center',
+                width: '100%',
+                fontSize: 'clamp(22px, 2.5vw, 30px)',
+                fontWeight: 400,
+                color: '#1d19ea',
+                letterSpacing: '-0.02em',
+                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              }}
+            >
+              doomsday: loki tva id
             </h3>
           </div>
 
