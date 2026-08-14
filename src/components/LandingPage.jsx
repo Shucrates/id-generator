@@ -2,13 +2,12 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { playRetroClickSound } from '../utils/soundUtils';
 
 const assets = {
-  object: 'https://www.figma.com/api/mcp/asset/9f438ed3-f0cc-4075-878d-2031e9b4a13d.png',
-  mug: 'https://www.figma.com/api/mcp/asset/ba3ff764-2846-41cd-8e08-757f4446f44e.png',
-  star: 'https://www.figma.com/api/mcp/asset/ca0d04b1-d6d7-49a9-9a65-54eea0b80a07.png',
-  disc: 'https://www.figma.com/api/mcp/asset/5469bc8e-0f3d-4f88-a221-9eee91fcd560.png',
-  warning: 'https://www.figma.com/api/mcp/asset/688d189e-a4d9-4ea4-83f8-af2ec09fe061.png',
-  wave: 'https://www.figma.com/api/mcp/asset/2ff39def-8e47-49c0-b6c6-b3e8e33b1d60.svg',
-  spotify: 'https://www.figma.com/api/mcp/asset/2020ff34-bdf4-450b-9d8e-df6a0ccb271f.svg'
+  object: '/assets/object.png',
+  mug: '/assets/mug.png',
+  star: '/assets/star.png',
+  disc: '/assets/disc.png',
+  warning: '/assets/warning.png',
+  spotify: '/assets/spotify-soundwave.png'
 };
 
 /* Box-shadow constants for the Win95 buttons */
@@ -336,10 +335,7 @@ export default function LandingPage({ onBrowseTemplates }) {
 
         {/* 9. Spotify + Soundwave (Bottom Right) */}
         <Draggable id="m-spotify" driftStyle={drift(-10, 8, 1)} style={{ position: 'absolute', right: '5%', bottom: '7%' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', pointerEvents: 'none' }}>
-            <img src={assets.spotify} alt="" draggable={false} style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
-            <img src={assets.wave} alt="" draggable={false} style={{ width: '135px', height: '32px', objectFit: 'contain' }} />
-          </div>
+          <img src={assets.spotify} alt="" draggable={false} style={{ height: '32px', width: 'auto', objectFit: 'contain', pointerEvents: 'none' }} />
         </Draggable>
       </div>
 
@@ -697,35 +693,17 @@ export default function LandingPage({ onBrowseTemplates }) {
               top: '85.6%',
             }}
           >
-            <div
+            <img
+              src={assets.spotify}
+              alt=""
+              draggable={false}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
+                height: 'clamp(24px, 3.1vw, 40px)',
+                width: 'auto',
+                objectFit: 'contain',
                 pointerEvents: 'none',
               }}
-            >
-              <img
-                src={assets.spotify}
-                alt=""
-                draggable={false}
-                style={{
-                  width: 'clamp(24px, 3.1vw, 40px)',
-                  height: 'clamp(24px, 3.1vw, 40px)',
-                  objectFit: 'contain',
-                }}
-              />
-              <img
-                src={assets.wave}
-                alt=""
-                draggable={false}
-                style={{
-                  width: 'clamp(100px, 14.8vw, 190px)',
-                  height: 'clamp(24px, 3.1vw, 40px)',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
+            />
           </Draggable>
         </div>
       </div>
