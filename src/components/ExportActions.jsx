@@ -78,7 +78,9 @@ export default function ExportActions({
     try {
       const zip = new JSZip();
       let prefix = 'custom_id';
-      if (template.id === 'loki-tva-id') {
+      if (template.id === 'mclovin-license') {
+        prefix = isCustomMode ? 'mclovin_custom_license' : 'mclovin_driver_license';
+      } else if (template.id === 'loki-tva-id') {
         prefix = isCustomMode ? 'loki_tva_custom_id' : 'loki_tva_id';
       } else {
         prefix = isCustomMode ? 'custom_id' : 'oscorp_richard_parker_id';

@@ -65,6 +65,7 @@ export function drawBarcode(ctx, text, x, y, width, height, color = "#0f172a") {
 }
 
 import QRCode from 'qrcode';
+import bwipjs from 'bwip-js';
 
 // Render real scannable QR code on canvas asynchronously using qrcode library
 export async function drawQRCode(ctx, text, x, y, size, color = "#000000") {
@@ -96,3 +97,35 @@ export async function drawQRCode(ctx, text, x, y, size, color = "#000000") {
 
   ctx.restore();
 }
+
+// Render real scannable PDF417 2D barcode on canvas asynchronously using bwip-js library
+export async function drawPDF417(ctx, text, x, y, width, height, color = "#000000") {
+  ctx.save();
+  const str = String(text || "https://id.patilshubham.me");
+
+  try {
+    const canvas = document.createElement('canvas');
+    const cleanColor = color.replace('#', '');
+    bwipjs.toCanvas(canvas, {
+      bcid: 'pdf417',
+      text: str,
+      scale: 3,
+      height: 12,
+      includetext: false,
+      barcolor: cleanColor
+    });
+
+    ctx.drawImage(canvas, x, y, width, height);
+  } catch (err) {
+    console.error("PDF417 barcode generation error:", err);
+    // Fallback fill if error occurs
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(x, y, width, height);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, width, height);
+  }
+
+  ctx.restore();
+}
+

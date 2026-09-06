@@ -69,9 +69,9 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
 
       <div
         style={{
-          maxWidth: '1280px',
+          maxWidth: '1500px',
           margin: '0 auto',
-          padding: 'clamp(20px, 4vw, 40px) clamp(16px, 5vw, 60px)',
+          padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 50px)',
           boxSizing: 'border-box',
           minHeight: '100vh',
           display: 'flex',
@@ -132,174 +132,220 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
           />
         </div>
 
-        {/* ── Main Workspace Content Grid ── */}
+        {/* ── Main Workspace Content Grid: 3 Templates in a Row ── */}
         <div
           style={{
             flex: 1,
             display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            gap: '50px clamp(60px, 10vw, 150px)',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            gap: 'clamp(40px, 5vw, 60px)',
+            width: '100%',
           }}
         >
-          {/* 1. Oscorp Staff ID Card */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%' }}>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-6">
+          {/* Row of 3 Templates */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              gap: '40px clamp(48px, 6vw, 110px)',
+              width: '100%',
+            }}
+          >
+            {/* 1. Oscorp Staff ID Card */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%', justifyContent: 'flex-end' }}>
               <div
-                onClick={() => {
-                  playRetroClickSound();
-                  if (onSelectTemplate) onSelectTemplate('oscorp-staff');
-                }}
                 style={{
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s ease',
-                  userSelect: 'none',
+                  minHeight: 'clamp(320px, 32vw, 440px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.03)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-                title="Click card to edit"
               >
-                <img
-                  src="/oscorp-card-stacked.png"
-                  alt="TASM Oscorp Staff ID Card Stack"
-                  style={{
-                    width: 'clamp(240px, 50vw, 310px)',
-                    height: 'auto',
-                    display: 'block',
+                <div
+                  onClick={() => {
+                    playRetroClickSound();
+                    if (onSelectTemplate) onSelectTemplate('oscorp-staff');
                   }}
-                />
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease',
+                    userSelect: 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.03)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                  title="Click card to edit"
+                >
+                  <img
+                    src="/oscorp-card-stacked.png"
+                    alt="TASM Oscorp Staff ID Card Stack"
+                    style={{
+                      width: 'clamp(220px, 22vw, 290px)',
+                      height: 'auto',
+                      display: 'block',
+                    }}
+                  />
+                </div>
               </div>
 
-              {/* Arrow and click to edit text commented out for now:
-              <div
+              <h3
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+                  margin: '18px auto 0 auto',
+                  textAlign: 'center',
+                  width: '100%',
+                  fontSize: 'clamp(20px, 2.2vw, 28px)',
+                  fontWeight: 400,
+                  color: '#1d19ea',
+                  letterSpacing: '-0.02em',
+                  fontFamily: "'Arial Narrow', 'Arial', sans-serif",
                 }}
               >
-                <CurvedArrow />
-                <span
-                  style={{
-                    fontSize: 'clamp(14px, 1.8vw, 24px)',
-                    color: '#000',
-                    marginTop: '2px',
-                    marginLeft: 'clamp(70px, 9vw, 150px)',
-                    whiteSpace: 'nowrap',
-                    fontFamily: "'Arial Narrow', 'Arial', sans-serif",
-                  }}
-                >
-                  click to edit!
-                </span>
-              </div>
-              */}
+                tasm: oscorp staff id
+              </h3>
             </div>
 
-            <h3
-              style={{
-                margin: '18px auto 0 auto',
-                textAlign: 'center',
-                width: '100%',
-                fontSize: 'clamp(22px, 2.5vw, 30px)',
-                fontWeight: 400,
-                color: '#1d19ea',
-                letterSpacing: '-0.02em',
-                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
-              }}
-            >
-              tasm: oscorp staff id
-            </h3>
-          </div>
-
-          {/* 2. Loki TVA ID Card */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%' }}>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-6">
-              <div
-                onClick={() => {
-                  playRetroClickSound();
-                  if (onSelectTemplate) onSelectTemplate('loki-tva-id');
-                }}
-                style={{
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s ease',
-                  userSelect: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.03)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-                title="Click card to edit"
-              >
-                <img
-                  src="/tva-loki-card-stacked.png?v=2"
-                  alt="Loki TVA ID Card Stack"
-                  style={{
-                    width: 'clamp(240px, 50vw, 310px)',
-                    height: 'auto',
-                    display: 'block',
-                  }}
-                />
-              </div>
-
-              {/* Arrow and click to edit text commented out for now:
+            {/* 2. Loki TVA ID Card */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%', justifyContent: 'flex-end' }}>
               <div
                 style={{
+                  minHeight: 'clamp(320px, 32vw, 440px)',
                   display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <CurvedArrow />
-                <span
-                  style={{
-                    fontSize: 'clamp(14px, 1.8vw, 24px)',
-                    color: '#000',
-                    marginTop: '2px',
-                    marginLeft: 'clamp(70px, 9vw, 150px)',
-                    whiteSpace: 'nowrap',
-                    fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                <div
+                  onClick={() => {
+                    playRetroClickSound();
+                    if (onSelectTemplate) onSelectTemplate('loki-tva-id');
                   }}
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease',
+                    userSelect: 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.03)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                  title="Click card to edit"
                 >
-                  click to edit!
-                </span>
+                  <img
+                    src="/tva-loki-card-stacked.png?v=2"
+                    alt="Loki TVA ID Card Stack"
+                    style={{
+                      width: 'clamp(220px, 22vw, 290px)',
+                      height: 'auto',
+                      display: 'block',
+                    }}
+                  />
+                </div>
               </div>
-              */}
+
+              <h3
+                style={{
+                  margin: '18px auto 0 auto',
+                  textAlign: 'center',
+                  width: '100%',
+                  fontSize: 'clamp(20px, 2.2vw, 28px)',
+                  fontWeight: 400,
+                  color: '#1d19ea',
+                  letterSpacing: '-0.02em',
+                  fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                }}
+              >
+                doomsday: loki tva id
+              </h3>
             </div>
 
-            <h3
-              style={{
-                margin: '18px auto 0 auto',
-                textAlign: 'center',
-                width: '100%',
-                fontSize: 'clamp(22px, 2.5vw, 30px)',
-                fontWeight: 400,
-                color: '#1d19ea',
-                letterSpacing: '-0.02em',
-                fontFamily: "'Arial Narrow', 'Arial', sans-serif",
-              }}
-            >
-              doomsday: loki tva id
-            </h3>
+            {/* 3. Superbad McLovin Driver License Card */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '100%', justifyContent: 'flex-end' }}>
+              <div
+                style={{
+                  minHeight: 'clamp(320px, 32vw, 440px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <div
+                  onClick={() => {
+                    playRetroClickSound();
+                    if (onSelectTemplate) onSelectTemplate('mclovin-license');
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease',
+                    userSelect: 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.03)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                  title="Click card to edit"
+                >
+                  <img
+                    src="/mclovin-card-stacked.png"
+                    alt="Superbad McLovin Driver License Stack"
+                    style={{
+                      width: 'clamp(245px, 24vw, 320px)',
+                      height: 'auto',
+                      display: 'block',
+                    }}
+                  />
+                </div>
+              </div>
+
+              <h3
+                style={{
+                  margin: '18px auto 0 auto',
+                  textAlign: 'center',
+                  width: '100%',
+                  fontSize: 'clamp(20px, 2.2vw, 28px)',
+                  fontWeight: 400,
+                  color: '#1d19ea',
+                  letterSpacing: '-0.02em',
+                  fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+                  lineHeight: 1.25,
+                }}
+              >
+                superbad: mclovin's driver license
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: '1em',
+                    color: '#1d19ea',
+                    marginTop: '3px',
+                    fontWeight: 400,
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  (don't use this to buy alchohol!!!)
+                </span>
+              </h3>
+            </div>
           </div>
 
-          {/* Right Column: More Coming Soon + Interactive Cat */}
+          {/* Bottom Row: More Coming Soon + Interactive Cat (Centered Below) */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '16px',
-              marginTop: '30px',
+              marginTop: 'clamp(10px, 2vw, 20px)',
+              marginBottom: '30px',
               userSelect: 'none',
             }}
           >

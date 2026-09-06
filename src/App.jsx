@@ -87,7 +87,12 @@ export default function App() {
       '/tva-loki-card-stacked.png?v=2',
       '/tva-loki-default-front.png?v=2',
       '/tva-loki-back.png?v=2',
-      '/tva-loki-custom-front.png?v=2'
+      '/tva-loki-custom-front.png?v=2',
+      '/mclovin-card-stacked.png',
+      '/mclovin-default-front.png',
+      '/mclovin-default-back.png',
+      '/mclovin-custom-front.png',
+      '/mclovin-custom-back.png'
     ];
     preloadedImages.forEach((url) => {
       const img = new Image();
@@ -192,7 +197,7 @@ export default function App() {
         >
           <span style={{ fontSize: '1.2em', lineHeight: 1 }}>←</span> templates
         </button>
-        <Header template={activeTemplate} isCustomMode={isCustomMode} />
+        <Header template={activeTemplate} isCustomMode={isCustomMode} userData={userData} />
       </div>
 
       {/* Main Dual-Card Display & Controls */}
@@ -234,7 +239,13 @@ export default function App() {
       <ImageCropModal
         isOpen={isCropModalOpen}
         imageSrc={rawPhotoSrc}
-        aspectRatio={activeTemplate.id === 'loki-tva-id' ? (260 / 338) : (752 / 940)}
+        aspectRatio={
+          activeTemplate.id === 'mclovin-license'
+            ? (314 / 354)
+            : activeTemplate.id === 'loki-tva-id'
+            ? (260 / 338)
+            : (752 / 940)
+        }
         onClose={() => setIsCropModalOpen(false)}
         onCropComplete={handleCropComplete}
       />

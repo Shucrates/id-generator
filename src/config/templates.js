@@ -203,5 +203,67 @@ export const TEMPLATES = [
         clip: false
       }
     ]
+  },
+  {
+    id: "mclovin-license",
+    name: "superbad: mclovin's driver license",
+    description: "Hawaii driver license identification card for McLovin from Superbad.",
+    category: "Driver License",
+    cardWidth: 1024,
+    cardHeight: 645,
+    exportScale: 2,
+    hasBackSide: true,
+    hasCuttingGuides: false,
+    hasQrCode: false,
+    hasPdf417: true,
+    lanyardSlot: { enabled: false },
+    theme: {
+      primary: "#1d19ea",
+      secondary: "#000000",
+      accent: "#f59e0b",
+      background: "#ffffff"
+    },
+    defaultValues: {
+      name: "McLOVIN",
+      address1: "892 MOMONA ST",
+      address2: "HONOLULU, HI 96820",
+      licenseNumber: "01-47-87441",
+      dob: "06/03/1981",
+      exp: "06/03/2008",
+      issueDate: "06/18/1998",
+      ht: "5-10",
+      wt: "150",
+      hair: "BRO",
+      eyes: "BRO",
+      sex: "M",
+      cty: "0",
+      class: "3",
+      restr: "CORRECTIVE LENSES",
+      endorse: "",
+      signatureDataUrl: null,
+      pdf417Url: "https://id.patilshubham.me"
+    },
+    customPlaceholders: {
+      name: "Add your name",
+      address1: "Add street address",
+      address2: "Add city, state zip",
+      photo: "Upload your image",
+      licenseNumber: "Add license number",
+      signature: "Sign card",
+      pdf417Url: "Add url to generate pdf417"
+    },
+    fields: [
+      {
+        id: "photo",
+        type: "photo",
+        x: 25,
+        y: 25,
+        width: 314,
+        height: 354,
+        clip: false
+      }
+    ]
   }
 ];
+
+

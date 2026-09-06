@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bwip-js": "^4.11.4",
     "canvas-confetti": "^1.9.4",
     "jszip": "^3.10.1",
     "lucide-react": "^1.29.0",
@@ -20,7 +21,11 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.0.5",
+    "canvas": "^3.2.3",
     "tailwindcss": "^4.3.3",
     "vite": "^8.2.0"
+  },
+  "allowScripts": {
+    "canvas@3.2.3": true
   }
 }
