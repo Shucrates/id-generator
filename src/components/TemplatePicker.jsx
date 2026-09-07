@@ -331,7 +331,7 @@ export default function TemplatePicker({ onSelectTemplate, onBack }) {
                     letterSpacing: '-0.02em',
                   }}
                 >
-                  (don't use this to buy alchohol!!!)
+                  (don't use this to buy alcohol!!!)
                 </span>
               </h3>
             </div>
