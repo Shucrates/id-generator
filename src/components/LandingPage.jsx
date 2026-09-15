@@ -136,7 +136,7 @@ export default function LandingPage({ onBrowseTemplates }) {
         </Draggable>
 
         {/* 3. Warning Icon (Upper Center) */}
-        <Draggable id="m-warning" driftStyle={drift(20, 30, 5)} style={{ position: 'absolute', left: '26%', top: '25%' }}>
+        <Draggable id="m-warning" driftStyle={drift(20, 30, 5)} style={{ position: 'absolute', left: '26%', top: '20%' }}>
           <img src={assets.warning} alt="" draggable={false} style={{ width: '64px', height: 'auto', objectFit: 'contain' }} />
         </Draggable>
 
@@ -144,7 +144,7 @@ export default function LandingPage({ onBrowseTemplates }) {
         <div
           style={{
             position: 'absolute',
-            top: '38%',
+            top: '32%',
             left: '50%',
             transform: `translateX(-50%) translate(${mouse.x * 6}px, ${mouse.y * 5}px)`,
             display: 'flex',
@@ -156,6 +156,42 @@ export default function LandingPage({ onBrowseTemplates }) {
             transition: 'transform 0.15s ease-out',
           }}
         >
+          {/* Promotional Banner */}
+          <div
+            style={{
+              marginBottom: '14px',
+              fontSize: 'clamp(14px, 3.8vw, 17px)',
+              lineHeight: 1.35,
+              color: '#000000',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              letterSpacing: '-0.02em',
+              maxWidth: '360px',
+              pointerEvents: 'auto',
+            }}
+          >
+            <div>
+              You can buy these cards and many more at{' '}
+              <a
+                href="https://www.halfbakedvault.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playRetroClickSound()}
+                style={{
+                  color: '#1d19ea',
+                  textDecoration: 'underline',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+                className="hover:underline"
+              >
+                halfbaked.vault
+              </a>
+            </div>
+            <div style={{ marginTop: '2px' }}>
+              Use code <strong style={{ fontWeight: 700, color: '#1d19ea' }}>Bored10</strong> for Free shipping and extra 10% off
+            </div>
+          </div>
+
           <h1
             style={{
               margin: 0,
@@ -441,6 +477,53 @@ export default function LandingPage({ onBrowseTemplates }) {
               }}
             />
           </Draggable>
+
+          {/* Promotional Banner (Above Main Hero Text) */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '30%',
+              transform: `translateX(-50%) translate(${mouse.x * 1.5}px, ${mouse.y * 1}px)`,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              fontFamily: "'Arial Narrow', 'Arial', sans-serif",
+              letterSpacing: '-0.02em',
+              lineHeight: 1.35,
+              fontSize: 'clamp(15px, 1.5vw, 21px)',
+              color: '#000000',
+              zIndex: 30,
+              pointerEvents: 'auto',
+              transition: 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              userSelect: 'none',
+            }}
+          >
+            <div>
+              You can buy these cards and many more at{' '}
+              <a
+                href="https://www.halfbakedvault.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playRetroClickSound()}
+                style={{
+                  color: '#1d19ea',
+                  textDecoration: 'underline',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  userSelect: 'auto',
+                }}
+                className="hover:underline"
+              >
+                halfbaked.vault
+              </a>
+            </div>
+            <div style={{ marginTop: '2px' }}>
+              Use code <strong style={{ fontWeight: 700, color: '#1d19ea' }}>Bored10</strong> for Free shipping and extra 10% off
+            </div>
+          </div>
 
           {/* 5. Main Title (not draggable) */}
           <h1
